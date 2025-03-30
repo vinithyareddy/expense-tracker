@@ -1,0 +1,29 @@
+<div class="monthly-summary">
+  <h2>Monthly Summary</h2>
+  <mat-card>
+    <table mat-table [dataSource]="monthlySummaries" class="mat-elevation-z2 full-width">
+      <ng-container matColumnDef="month">
+        <th mat-header-cell *matHeaderCellDef> Month </th>
+        <td mat-cell *matCellDef="let summary"> {{ summary.monthYear }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="received">
+        <th mat-header-cell *matHeaderCellDef> Received </th>
+        <td mat-cell *matCellDef="let summary"> {{ summary.received | currency: 'USD' }} </td> <!-- USD -->
+      </ng-container>
+
+      <ng-container matColumnDef="spent">
+        <th mat-header-cell *matHeaderCellDef> Spent </th>
+        <td mat-cell *matCellDef="let summary"> {{ summary.spent | currency: 'USD' }} </td> <!-- USD -->
+      </ng-container>
+
+      <ng-container matColumnDef="saved">
+        <th mat-header-cell *matHeaderCellDef> Saved </th>
+        <td mat-cell *matCellDef="let summary"> {{ summary.saved | currency: 'USD' }} </td> <!-- USD -->
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['month', 'received', 'spent', 'saved']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['month', 'received', 'spent', 'saved']"></tr>
+    </table>
+  </mat-card>
+</div>

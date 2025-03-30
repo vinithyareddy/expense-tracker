@@ -1,0 +1,29 @@
+<div class="dashboard-container">
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <mat-card class="card received">Received: {{ totalReceived | currency: 'USD' }}</mat-card>
+    <mat-card class="card spent">Spent: {{ totalSpent | currency: 'USD' }}</mat-card>
+    <mat-card class="card saved">Saved: {{ totalSaved | currency: 'USD' }}</mat-card>
+  </div>
+
+  <!-- Charts Row 1: Line + Pie -->
+  <div class="top-row">
+    <div class="chart">
+      <h3>Savings Growth (Line)</h3>
+      <canvas #lineChart></canvas> <!-- Updated with ViewChild reference -->
+    </div>
+
+    <div class="chart">
+      <h3>Spending by Category (Pie)</h3>
+      <canvas #pieChart></canvas> <!-- Updated with ViewChild reference -->
+    </div>
+  </div>
+
+  <!-- Bar Chart Row -->
+  <div class="bottom-row">
+    <div class="chart bar-chart">
+      <h3>Monthly Spend (Bar)</h3>
+      <canvas #barChart></canvas> <!-- Updated with ViewChild reference -->
+    </div>
+  </div>
+</div>
