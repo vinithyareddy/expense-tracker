@@ -32,59 +32,107 @@ export class ExpensesComponent {
     location: ''
   };
 
+  editMode = false;
+  editingExpenseId: string | null = null;
+  showForm = false;
+
   constructor(private firestore: AngularFirestore) {
     this.loadExpenses();
   }
 
+  // 🔁 Load all expenses
   loadExpenses() {
-    this.firestore.collection<Expense>('expenses').valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
+    this.firestore.collection<Expense>('expenses', ref => ref.orderBy('date', 'desc')).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
       this.expenseList = data;
       this.dataSource.data = this.expenseList;
     });
   }
 
+  // 🔍 Search/filter table
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
     this.dataSource.filter = filterValue;
   }
 
-  async addExpense() {
+  // ➕ Open form for new expense
+  toggleForm() {
+    this.showForm = !this.showForm;
+    if (!this.showForm) {
+      this.resetForm();
+    }
+  }
+
+  // 🧹 Reset form fields
+  resetForm() {
+    this.newExpense = {
+      date: '',
+      amount: 0,
+      category: '',
+      description: '',
+      method: '',
+      location: ''
+    };
+    this.editMode = false;
+    this.editingExpenseId = null;
+  }
+
+  // ✏️ Load selected row into form for editing
+  startEdit(expense: Expense) {
+    this.newExpense = {
+      ...expense,
+      date: this.formatDate(expense.date)
+    };
+    this.editingExpenseId = expense.id ?? null;
+    this.editMode = true;
+    this.showForm = true;
+  }
+
+  // ✅ Add or Update expense
+  async submitExpense() {
     const { date, amount, category, description, method, location } = this.newExpense;
 
     if (date && amount && category && description && method && location) {
-      await this.firestore.collection('expenses').add({
-        date: new Date(date + 'T12:00:00') , // ✅ Forces local timezone midday
+      const payload = {
+        date: new Date(date + 'T12:00:00'),
         amount,
         category,
         description,
         method,
         location
-      });
-      
-
-      this.newExpense = {
-        date: '',
-        amount: 0,
-        category: '',
-        description: '',
-        method: '',
-        location: ''
       };
+
+      if (this.editMode && this.editingExpenseId) {
+        this.firestore.collection('expenses').doc(this.editingExpenseId).update(payload);
+      } else {
+        this.firestore.collection('expenses').add(payload);
+      }
+  
+      this.resetForm();
+      this.showForm = false;
     } else {
-      alert('All fields are required.');
+      alert('Please fill in all fields.');
     }
   }
 
+  // ❌ Cancel edit or form
+  cancelEdit() {
+    this.resetForm();
+    this.showForm = false;
+  }
+  
+
+  // 🗑️ Delete a record
   deleteExpense(id: string) {
     this.firestore.doc(`expenses/${id}`).delete();
   }
+
+  // 📅 Format date for input compatibility
   formatDate(date: any): string {
     if (date?.toDate) {
-      return new Date(date.toDate()).toISOString().substring(0, 10); // Formats as yyyy-MM-dd
+      return new Date(date.toDate()).toISOString().substring(0, 10);
     } else if (typeof date === 'string' || date instanceof Date) {
       return new Date(date).toISOString().substring(0, 10);
     }
     return '';
   }
-  
 }

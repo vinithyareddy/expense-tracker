@@ -2,9 +2,8 @@ import { Component, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ChartConfiguration, ChartOptions, Chart } from 'chart.js';
 import { Expense } from '../expenses/expenses.component';
-import ChartDataLabels from 'chartjs-plugin-datalabels'; // Updated import
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-// Register chartjs plugins
 Chart.register(ChartDataLabels);
 
 @Component({
@@ -17,7 +16,6 @@ export class HomeComponent implements OnInit, OnChanges {
   totalSpent = 0;
   totalSaved = 0;
 
-  // Chart Data Variables
   lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
     datasets: [
@@ -32,7 +30,8 @@ export class HomeComponent implements OnInit, OnChanges {
     ]
   };
 
-  pieChartData: ChartConfiguration<'pie'>['data'] = {
+  // 👇 Updated pie chart to doughnut chart
+  pieChartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: [],
     datasets: [
       {
@@ -59,7 +58,7 @@ export class HomeComponent implements OnInit, OnChanges {
   @ViewChild('barChart') barChart: any;
   @ViewChild('lineChart') lineChart: any;
 
-  constructor(private firestore: AngularFirestore) {}  // Removed CurrencyService, we're working with USD directly
+  constructor(private firestore: AngularFirestore) {}
 
   ngOnInit() {
     this.loadData();
@@ -78,9 +77,9 @@ export class HomeComponent implements OnInit, OnChanges {
 
       const monthlyMap: { [key: string]: { received: number; spent: number } } = {};
       const categoryMap: { [category: string]: number } = {};
+
       data.forEach(exp => {
         const date = exp.date?.toDate ? exp.date.toDate() : new Date(exp.date);
-      
         if (isNaN(date.getTime())) return;
 
         const monthKey = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
@@ -97,35 +96,30 @@ export class HomeComponent implements OnInit, OnChanges {
           spent += exp.amount;
           monthlyMap[monthKey].spent += exp.amount;
 
-          // Pie chart - accumulate by category
           if (!categoryMap[exp.category]) categoryMap[exp.category] = 0;
           categoryMap[exp.category] += exp.amount;
         }
       });
 
-      // Amounts are already in USD, no need to convert
       this.totalReceived = received;
       this.totalSpent = spent;
-      this.totalSaved = this.totalReceived - this.totalSpent;
+      this.totalSaved = received - spent;
 
-      // Update LINE chart with savings month-wise
       const monthLabels = Object.keys(monthlyMap);
       const savingsData = monthLabels.map(key => monthlyMap[key].received - monthlyMap[key].spent);
+      const spentData = monthLabels.map(key => monthlyMap[key].spent);
+      const pieLabels = Object.keys(categoryMap);
+      const pieData = pieLabels.map(key => categoryMap[key]);
+
       this.lineChartData.labels = monthLabels;
       this.lineChartData.datasets[0].data = savingsData;
 
-      // Update BAR chart with spent month-wise
-      const spentData = monthLabels.map(key => monthlyMap[key].spent);
       this.barChartData.labels = monthLabels;
       this.barChartData.datasets[0].data = spentData;
 
-      // Update PIE chart with spending by category
-      const pieLabels = Object.keys(categoryMap);
-      const pieData = pieLabels.map(key => categoryMap[key]);
       this.pieChartData.labels = pieLabels;
       this.pieChartData.datasets[0].data = pieData;
 
-      // Initialize charts (if not already initialized)
       this.updateCharts();
     });
   }
@@ -133,7 +127,7 @@ export class HomeComponent implements OnInit, OnChanges {
   updateCharts() {
     if (this.pieChart && !this.pieChart.chart) {
       this.pieChart.chart = new Chart(this.pieChart.nativeElement, {
-        type: 'pie',
+        type: 'doughnut', // 👈 Changed from 'pie'
         data: this.pieChartData,
         options: this.pieChartOptions
       });
@@ -154,7 +148,8 @@ export class HomeComponent implements OnInit, OnChanges {
     }
   }
 
-  pieChartOptions: ChartOptions<'pie'> = {
+  // 👇 Updated type from 'pie' to 'doughnut'
+  pieChartOptions: ChartOptions<'doughnut'> = {
     responsive: true,
     plugins: {
       legend: { position: 'top' },
@@ -167,7 +162,8 @@ export class HomeComponent implements OnInit, OnChanges {
         },
         font: { weight: 'bold' as const, size: 14 }
       }
-    }
+    },
+    cutout: '60%' // 🍩 thickness of donut hole
   };
 
   pieChartPlugins = [ChartDataLabels];

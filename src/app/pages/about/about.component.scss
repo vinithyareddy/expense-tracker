@@ -1,21 +1,138 @@
 .about-container {
-  max-width: 600px;
-  margin: 80px auto;
-  padding: 24px;
+  background: linear-gradient(to bottom, #e0eafc, #cfdef3);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
   text-align: center;
+}
+
+.hero-section {
+  max-width: 800px;
+  margin-bottom: 3rem;
 
   h1 {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
+    font-size: 3rem;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 1rem;
+    animation: fadeSlideIn 1s ease-out;
   }
 
   p {
-    font-size: 1.1rem;
-    margin-bottom: 12px;
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 2rem;
+  }
+}
+
+.features-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 4rem;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.feature-box {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 280px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  animation: zoomIn 0.8s ease;
+
+  &:hover {
+    transform: translateY(-5px);
   }
 
-  button {
-    margin-top: 20px;
-    padding: 10px 24px;
+  mat-icon {
+    font-size: 3rem;
+    color: #ff5f6d;
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    margin: 0.5rem 0;
+    font-weight: 600;
+    color: #333;
+  }
+
+  p {
+    color: #555;
+    font-size: 0.95rem;
+  }
+}
+
+.bottom-cta {
+  margin-top: 2rem;
+
+  h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: #222;
+  }
+}
+
+.animated-button {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  color: white;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  box-shadow: 0 10px 25px rgba(255, 65, 108, 0.3);
+  cursor: pointer;
+  animation: bounceIn 1s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 15px 30px rgba(255, 65, 108, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+/* Animations */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
   }
 }

@@ -7,3 +7,12 @@ a {
   text-decoration: none;
   margin-left: 12px;
 }
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #201b37;
+  color: white;
+  font-size: 1.2rem;
+}
