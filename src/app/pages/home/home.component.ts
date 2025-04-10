@@ -78,9 +78,9 @@ export class HomeComponent implements OnInit, OnChanges {
 
       const monthlyMap: { [key: string]: { received: number; spent: number } } = {};
       const categoryMap: { [category: string]: number } = {};
-
       data.forEach(exp => {
-        const date = new Date(exp.date);
+        const date = exp.date?.toDate ? exp.date.toDate() : new Date(exp.date);
+      
         if (isNaN(date.getTime())) return;
 
         const monthKey = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;

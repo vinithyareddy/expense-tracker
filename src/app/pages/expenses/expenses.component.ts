@@ -5,7 +5,7 @@ import firebase from 'firebase/compat/app';
 
 export interface Expense extends firebase.firestore.DocumentData {
   id?: string;
-  date: string;
+  date: any;
   amount: number;
   category: string;
   description: string;
@@ -52,7 +52,15 @@ export class ExpensesComponent {
     const { date, amount, category, description, method, location } = this.newExpense;
 
     if (date && amount && category && description && method && location) {
-      await this.firestore.collection('expenses').add({ date, amount, category, description, method, location });
+      await this.firestore.collection('expenses').add({
+        date: new Date(date + 'T12:00:00') , // ✅ Forces local timezone midday
+        amount,
+        category,
+        description,
+        method,
+        location
+      });
+      
 
       this.newExpense = {
         date: '',
@@ -70,4 +78,13 @@ export class ExpensesComponent {
   deleteExpense(id: string) {
     this.firestore.doc(`expenses/${id}`).delete();
   }
+  formatDate(date: any): string {
+    if (date?.toDate) {
+      return new Date(date.toDate()).toISOString().substring(0, 10); // Formats as yyyy-MM-dd
+    } else if (typeof date === 'string' || date instanceof Date) {
+      return new Date(date).toISOString().substring(0, 10);
+    }
+    return '';
+  }
+  
 }

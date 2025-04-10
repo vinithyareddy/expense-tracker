@@ -57,7 +57,7 @@
 
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef>Date</th>
-      <td mat-cell *matCellDef="let el">{{ el.date }}</td>
+      <td mat-cell *matCellDef="let element">{{ formatDate(element.date) }}</td>
     </ng-container>
 
     <ng-container matColumnDef="amount">

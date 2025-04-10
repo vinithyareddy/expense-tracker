@@ -37,7 +37,8 @@ export class MonthlyComponent implements OnInit {
       const grouped: { [monthYear: string]: { received: number; spent: number } } = {};
 
       data.forEach(expense => {
-        const date = new Date(expense.date);
+        const date =
+        (expense.date as any)?.toDate?.() ?? new Date(expense.date);      
         if (isNaN(date.getTime())) return;
 
         const key = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
