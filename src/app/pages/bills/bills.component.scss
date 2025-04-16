@@ -1,0 +1,212 @@
+/* 🔷 Page Header Styles */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px 20px;
+    margin-top: 40px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111;
+  }
+  
+  /* ➕ Add Bill Button */
+  .add-bill-btn {
+    background-color: #7b61ff;
+    color: white;
+    font-weight: 500;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: background 0.2s ease;
+  }
+  
+  .add-bill-btn:hover {
+    background-color: #6847f6;
+  }
+  
+  .plus-icon {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  
+
+.widget-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 36px;                      // ⬅️ Wider spacing between cards
+    justify-content: flex-start;
+    align-items: stretch;
+    margin: 40px 0 20px 0;
+    padding-left: 20px;             // ⬅️ Hug closer to left
+  }
+  .widget {
+    width: 420px;                  // ⬅️ Much wider widget
+    height: 160px;
+    padding: 28px;
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color: #fff;
+  }
+    
+    
+  .green {
+    color: #4caf50;
+  }
+  
+  .blue {
+    color: #3b82f6;
+  }
+  
+//   .widget.full {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: flex-start;
+//     justify-content: center;
+//     padding-left: 24px;
+//   }
+  
+  .label {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+  
+  .label1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #040404;
+  }
+  .value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 40px;
+    margin-left: 15px;
+  }
+  
+  .caption {
+    margin-top: 55px;
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+  
+
+  
+  .white {
+    background-color: #ffffff;
+    color: #000;
+  }
+  
+  .purple {
+    background: linear-gradient(to right, #7b61ff, #5c3bff);
+    color: #fff;
+  }
+  
+  .widget-card {
+    width: 220px;
+    height: 120px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .widget-label {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  
+  .widget-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  
+  .red {
+    background-color: #ef5350;
+  }
+  
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 0 10px;
+  }
+  
+  .day {
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.95rem;
+    padding: 10px 0;
+  }
+  
+  .date-cell {
+    height: 50px;
+    border-radius: 8px;
+    background-color: #f3f6fc;
+    border: 1px solid #e0e0e0;
+    transition: 0.2s ease;
+  }
+  
+  .date-cell:hover {
+    background-color: #e8f0fe;
+    cursor: pointer;
+  }
+
+  .mat-expansion-panel {
+    background-color: white !important;
+    border-radius: 12px;
+    margin-top: 40px;
+    box-shadow: none;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .mat-expansion-panel-header {
+    font-weight: 600;
+    background-color: #fafafa;
+    border-bottom: 1px solid #eee;
+    padding: 0 16px;
+  }
+  .bills-container {
+    width: 1400px;
+    margin: auto;
+    padding: 20px;
+  }
+  .widget-row {
+    margin: 30px 40px;
+  }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px 0 10px 40px;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  select {
+    padding: 6px 12px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  

@@ -1,11 +1,11 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "AIzaSyC46h62eTb...mq_RU",
-    authDomain: "expense-tracker-96696.firebaseapp.com",
-    projectId: "expense-tracker-96696",
-    storageBucket: "expense-tracker-96696.appspot.com",
-    messagingSenderId: "220785810819",
-    appId: "1:220785810819:web:ae47b2382dfde39bbaeeab6"
+    apiKey: "AIzaSyBBSv-o7BOA93UUT9RxszDM276jXti61bk",
+    authDomain: "vp-expense-tracker.firebaseapp.com",
+    projectId: "vp-expense-tracker",
+    storageBucket: "vp-expense-tracker.firebasestorage.app",
+    messagingSenderId: "211072673901",
+    appId: "1:211072673901:web:17450d77ac0d6c170c7764"
   }
 };

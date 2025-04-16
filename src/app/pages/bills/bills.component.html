@@ -1,0 +1,95 @@
+<div class="page-header">
+    <h2 class="title">Bills & Budget</h2>
+    <button class="add-bill-btn">
+      <span class="plus-icon">＋</span> Add Bill
+    </button>
+  </div>
+
+<!-- Summary Cards -->
+<div class="bills-container">
+<div class="container">
+    <div class="widget-row">
+        <!-- Total Due -->
+        <div class="widget purple">
+          <div class="widget-content">
+            <p class="label">Total Due</p>
+            <p class="value">₹9,200</p>
+            <p class="caption">↗ Due this month</p>
+          </div>
+        </div>
+      
+        <!-- Total Paid -->
+        <div class="widget white">
+          <div class="widget-content">
+            <p class="label1">Total Paid</p>
+            <p class="value">₹6,000</p>
+            <p class="caption green">↗ Paid this month</p>
+          </div>
+        </div>
+      
+        <!-- Personal Loans -->
+        <div class="widget white">
+          <div class="widget-content">
+            <p class="label1">Personal Loans</p>
+            <p class="value gray">−₹12,000</p>
+            <p class="caption blue">👤 Outstanding amount</p>
+          </div>
+        </div>
+      </div>
+      
+      
+</div>
+  <!-- Monthly Calendar -->
+  <mat-card>
+    <h2>April 2025</h2>
+    <div class="calendar">
+      <div class="day" *ngFor="let day of weekDays">{{ day }}</div>
+      <div class="date-cell" *ngFor="let i of [].constructor(35)"></div>
+    </div>
+  </mat-card>
+  
+  <!-- 🔽 Filter Dropdown -->
+<div class="filter-row">
+    <label for="billFilter">Filter: </label>
+    <select id="billFilter" [(ngModel)]="selectedBillType">
+      <option value="credit">Credit Card Bills</option>
+      <option value="regular">Regular Bills</option>
+      <option value="loans">Personal Loans</option>
+    </select>
+  </div>
+  
+  <!-- Bill Sections -->
+ <!-- Credit Card Bills -->
+<mat-accordion *ngIf="selectedBillType === 'credit'">
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Credit Card Bills</mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="bill-entry">HDFC | ₹15,000 | EMI ₹3,000 | 5 months</div>
+      <button mat-button color="primary">Add Card</button>
+    </mat-expansion-panel>
+  </mat-accordion>
+  
+  <!-- Regular Bills -->
+  <mat-accordion *ngIf="selectedBillType === 'regular'">
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Regular Bills</mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="bill-entry">Rent | ₹12,000</div>
+      <button mat-button color="primary">Add Bill</button>
+    </mat-expansion-panel>
+  </mat-accordion>
+  
+  <!-- Personal Loans -->
+  <mat-accordion *ngIf="selectedBillType === 'loans'">
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Personal Loans</mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="bill-entry">Rajesh | ₹30,000 | EMI ₹3,000</div>
+      <button mat-button color="primary">Add Loan</button>
+    </mat-expansion-panel>
+  </mat-accordion>
+  
+</div>

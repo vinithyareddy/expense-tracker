@@ -1,0 +1,92 @@
+<div class="auth-container">
+    <mat-card>
+      <h2>{{ isLoginMode ? 'Login' : 'Register' }}</h2>
+  
+      <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+        <!-- Name and phone only for register -->
+        <div *ngIf="!isLoginMode">
+          <mat-form-field appearance="outline">
+            <mat-label>Full Name</mat-label>
+            <input matInput name="name" [(ngModel)]="name" required #nameInput="ngModel" />
+            <mat-error *ngIf="nameInput.invalid && nameInput.touched">Name is required</mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Phone Number</mat-label>
+            <input matInput name="phone" [(ngModel)]="phone" required #phoneInput="ngModel" />
+            <mat-error *ngIf="phoneInput.invalid && phoneInput.touched">Phone is required</mat-error>
+          </mat-form-field>
+        </div>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput name="email" type="email" [(ngModel)]="email" required #emailInput="ngModel" />
+          <mat-error *ngIf="emailInput.invalid && emailInput.touched">Valid email required</mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            name="password"
+            required
+            minlength="6"
+            #passwordInput="ngModel"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="togglePasswordVisibility()"
+            type="button"
+            aria-label="Toggle password visibility"
+          >
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="passwordInput.invalid && passwordInput.touched">
+            Password must be at least 6 characters
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" *ngIf="!isLoginMode">
+            <mat-label>Confirm Password</mat-label>
+            <input
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="confirmPassword"
+              name="confirmPassword"
+              required
+              #confirmInput="ngModel"
+            />
+            <mat-error *ngIf="confirmInput.invalid && confirmInput.touched">
+              Confirm your password
+            </mat-error>
+            <mat-error *ngIf="password !== confirmPassword && confirmPassword">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
+          
+        <div class="forgot-password" *ngIf="isLoginMode">
+            <a (click)="onForgotPassword()">Forgot Password?</a>
+          </div>
+          
+  
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading" class="full-width-button">
+            <mat-progress-spinner *ngIf="isLoading" diameter="20" mode="indeterminate" color="accent"></mat-progress-spinner>
+            <span *ngIf="!isLoading">{{ isLoginMode ? 'Login' : 'Register' }}</span>
+          </button>
+          
+          <div class="remember-checkbox">
+            <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">
+              Remember Me
+            </mat-checkbox>
+          </div>
+          
+  
+        <p class="mode-toggle">
+          {{ isLoginMode ? "Don't have an account?" : "Already have an account?" }}
+          <a (click)="onToggleMode()">{{ isLoginMode ? 'Register' : 'Login' }}</a>
+        </p>
+      </form>
+    </mat-card>
+  </div>

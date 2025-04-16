@@ -10,6 +10,6 @@ export class AboutComponent {
   constructor(private router: Router) {}
 
   goHome() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/auth']);
   }
 }

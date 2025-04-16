@@ -2,7 +2,7 @@
   <div class="hero-section">
     <h1>Track Smarter. Spend Wiser. 💰</h1>
     <p>Your personal finance companion — designed to help you track, plan, and grow.</p>
-    <button class="animated-button" (click)="goHome()">🚀 Get Started</button>
+    <button class="animated-button" [routerLink]="['/auth']">🚀 Get Started</button>
   </div>
 
   <div class="features-section">
@@ -25,6 +25,6 @@
 
   <div class="bottom-cta">
     <h2>Ready to take control of your finances?</h2>
-    <button class="animated-button" (click)="goHome()">Start Now</button>
+    <button class="animated-button" [routerLink]="['/auth']">Start Now</button>
   </div>
 </div>
