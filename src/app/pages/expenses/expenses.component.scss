@@ -60,6 +60,7 @@ margin-bottom: 22px;
       background: linear-gradient(to right, #6a11cb, #2575fc);
       color: #fff;
 
+
       &:hover {
         background: linear-gradient(to right, #5a0ebd, #2064e3);
       }
@@ -114,7 +115,9 @@ margin-bottom: 22px;
       border-radius: 10px;
       font-weight: 600;
       padding: 0 20px;
-
+      button:first-child {
+        margin-right: 12px; // or any gap you want
+      }
       &:hover {
         background: linear-gradient(to right, #5a0ebd, #2064e3);
       }
@@ -175,6 +178,34 @@ margin-bottom: 22px;
 
     mat-form-field {
       width: 100%;
+    }
+  }
+}
+.form-buttons {
+  display: flex;
+  gap: 12px; // ← adds spacing between buttons
+
+  button {
+    height: 56px;
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0 20px;
+    margin-top: auto;
+
+    &:hover {
+      background: linear-gradient(to right, #5a0ebd, #2064e3);
+    }
+  }
+
+  button.mat-stroked-button {
+    background: transparent;
+    color: #6a11cb;
+    border: 1px solid #6a11cb;
+
+    &:hover {
+      background: rgba(106, 17, 203, 0.05);
     }
   }
 }
