@@ -74,10 +74,6 @@
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
-  <!-- Auto-calculate Due Date -->
-  <mat-checkbox [(ngModel)]="bill.autoDueDate">
-    Auto-calculate due date from monthly payment
-  </mat-checkbox>
   <p *ngIf="calculatedInstallments && !bill.noMonthlyPayment" class="installment-info">
     🔁 Repeats monthly for <strong>{{ calculatedInstallments }}</strong> months
   </p>

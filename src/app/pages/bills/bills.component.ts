@@ -108,6 +108,8 @@ export class BillsComponent implements OnInit {
         this.updatePersonalLoanAmount();
         this.calculateTotals();
         this.refreshCalendar();
+        this.updateTotalCreditCardAmount();
+
       }
     });
   }
@@ -183,6 +185,8 @@ export class BillsComponent implements OnInit {
     this.updateCardBalanceHistory();
     this.calculateTotals();
     this.refreshCalendar();
+    this.updateTotalCreditCardAmount();
+
   }
 
   updateCardBalanceHistory(): void {
@@ -214,6 +218,8 @@ export class BillsComponent implements OnInit {
       this.updatePersonalLoanAmount();
       this.calculateTotals();
       this.refreshCalendar();
+      this.updateTotalCreditCardAmount();
+
     }
   }
 
@@ -287,6 +293,18 @@ export class BillsComponent implements OnInit {
     });
   }
   
+  updateTotalCreditCardAmount(): void {
+    const creditBills = this.allBills.filter(b => b.type === 'credit');
+    let total = 0;
+  
+    for (let bill of creditBills) {
+      const paidAmount = (bill.paidCount || 0) * (bill.monthlyPayment || 0);
+      const remaining = Math.max(bill.amount - paidAmount, 0);
+      total += remaining;
+    }
+  
+    localStorage.setItem('totalCreditCardAmount', JSON.stringify(total));
+  }
   
   
 }
