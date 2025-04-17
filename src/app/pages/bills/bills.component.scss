@@ -1,212 +1,651 @@
-/* 🔷 Page Header Styles */
+/* === Page Header === */
 .page-header {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  margin-top: 30px;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111;
+}
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px; // 👈 Add spacing between green button and trash
+}
+
+.delete-icon {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.delete-icon:hover {
+  background: #f9dede;
+}
+
+.add-bill-btn {
+  background-color: #7b61ff;
+  color: white;
+  font-weight: 500;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: background 0.2s ease;
+}
+
+.add-bill-btn:hover {
+  background-color: #6847f6;
+}
+
+.plus-icon {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.filter-select-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  margin: 20px 40px;
+
+
+
+  .select-icon-wrapper {
+    position: relative;
+    display: inline-flex;
     align-items: center;
-    padding: 0 40px 20px;
-    margin-top: 40px;
-  }
+    border: 2px solid #040304;
+    border-radius: 14px;
+    background: white;
+    height: 60px; // ✅ Increased height
+    width: 200px; // or more
+    padding: 12px 16px;
+
   
-  .title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #111;
-  }
+    .select-icon {
+      position: absolute;
+      left: 16px;
+      width: 56px;    // ✅ Bigger icon
+      height: 50px;
+      opacity: 0.8;
+      pointer-events: none;
+    }
   
-  /* ➕ Add Bill Button */
-  .add-bill-btn {
-    background-color: #7b61ff;
-    color: white;
-    font-weight: 500;
-    padding: 10px 20px;
-    font-size: 0.95rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: background 0.2s ease;
-  }
+    select {
+      width: 100%;
+      padding-left: 70px;  // 👈 enough space for bigger icon
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      font-weight: 500;
+      outline: none;
+      appearance: none;
+      cursor: pointer;
+      height: 60px;
+      
   
-  .add-bill-btn:hover {
-    background-color: #6847f6;
+      option {
+        font-weight: 500;
+      }
+    }
   }
-  
-  .plus-icon {
-    font-size: 1.2rem;
-    font-weight: 600;
   }
-  
+
+
+/* === Section Heading === */
+.section-heading {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 20px 40px 10px;
+  color: #333;
+}
+
+/* === Bill Section === */
+.bill-section {
+  padding: 0 40px 30px;
+}
+
+/* === Modern Bill Card === */
+.bill-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.bill-entry:hover {
+  transform: translateY(-3px);
+}
+
+.bill-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.bill-title {
+  font-weight: 600;
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+
+}
+
+.bill-subtext {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.bill-cta {
+  background: #4caf50;
+  border: none;
+  padding: 10px 18px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.bill-cta:hover {
+  background: #3e9141;
+}
+
+.card-widget {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-wrapper {
+  background: #f2f4f8;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.card-subtext {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.card-right {
+  text-align: right;
+}
+
+.card-amount {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111;
+}
+
+.card-meta p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 2px 0;
+}
+
+.mark-paid {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mark-paid:hover {
+  background: #3b9b41;
+}
+
+
+.add-bill-secondary:hover {
+  color: #5c3bff;
+}
+
+/* === Widget Summary Cards === */
+.bills-container {
+  margin-top: 20px;
+  padding: 0 40px;
+}
 
 .widget-row {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 36px;                      // ⬅️ Wider spacing between cards
-    justify-content: flex-start;
-    align-items: stretch;
-    margin: 40px 0 20px 0;
-    padding-left: 20px;             // ⬅️ Hug closer to left
-  }
-  .widget {
-    width: 420px;                  // ⬅️ Much wider widget
-    height: 160px;
-    padding: 28px;
-    border-radius: 20px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    background-color: #fff;
-  }
-    
-    
-  .green {
-    color: #4caf50;
-  }
-  
-  .blue {
-    color: #3b82f6;
-  }
-  
-//   .widget.full {
-//     display: flex;
-//     flex-direction: column;
-//     align-items: flex-start;
-//     justify-content: center;
-//     padding-left: 24px;
-//   }
-  
-  .label {
-    font-size: 1.5rem;
-    font-weight: 500;
-    margin-bottom: 4px;
-    color: #fff;
-  }
-  
-  .label1 {
-    font-size: 1.5rem;
-    font-weight: 500;
-    margin-bottom: 4px;
-    color: #040404;
-  }
-  .value {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-top: 40px;
-    margin-left: 15px;
-  }
-  
-  .caption {
-    margin-top: 55px;
-    font-size: 0.8rem;
-    font-weight: 400;
-  }
-  
+  display: flex;
+  gap: 36px;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin-bottom: 30px;
+}
+.card-widget {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
 
-  
-  .white {
-    background-color: #ffffff;
-    color: #000;
-  }
-  
-  .purple {
-    background: linear-gradient(to right, #7b61ff, #5c3bff);
-    color: #fff;
-  }
-  
-  .widget-card {
-    width: 220px;
-    height: 120px;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .widget-label {
-    font-size: 1rem;
+.card-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-wrapper {
+  background: #f2f4f8;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.card-subtext {
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 10px;
+  margin-left: 40px
+}
+
+.card-right {
+  text-align: right;
+}
+
+.card-amount {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111;
+}
+
+.card-meta p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 2px 0;
+}
+
+.mark-paid {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mark-paid:hover {
+  background: #3b9b41;
+}
+
+.widget {
+  width: 420px;
+  height: 160px;
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 24px;
+  background-color: #fff;
+}
+
+.widget-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.label,
+.label1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: inherit;
+  margin-bottom: 6px;
+}
+
+.value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 4px;
+  margin-top: 40px;
+  margin-left: 20px;
+}
+
+.caption {
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-top: 50px;
+}
+
+.green {
+  color: #4caf50;
+}
+
+
+.blue {
+  color: #3b82f6;
+}
+
+.purple {
+  background: linear-gradient(to right, #7b61ff, #5c3bff);
+  color: white;
+}
+
+.purple .label,
+.purple .caption {
+  color: #e0dcff;
+}
+
+.purple .value {
+  color: #ffffff;
+}
+
+/* === Calendar Styling === */
+mat-card {
+  border-radius: 20px;
+  padding: 30px 40px;
+  margin: 30px 40px 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.day {
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.date-cell {
+  height: 55px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #f6f8fb;
+  transition: background 0.2s;
+}
+
+.date-cell:hover {
+  background-color: #e6ecf8;
+  cursor: pointer;
+}
+
+/* === Filter Dropdown === */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0 20px 40px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+select {
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: border 0.2s ease;
+}
+
+select:focus {
+  border-color: #7b61ff;
+}
+
+/* === Accordion Styling === */
+mat-accordion {
+  margin: 0 40px 30px;
+  border-radius: 12px;
+  box-shadow: none;
+  background: transparent;
+}
+
+mat-expansion-panel {
+  background-color: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+mat-expansion-panel-header {
+  border-radius: 12px;
+  padding-left: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* === Pill-Style Filter === */
+.pill-filter {
+  display: flex;
+  gap: 12px;
+  margin: 20px 40px;
+
+  button {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: 1px solid #d0d0d0;
+    background: #fff;
     font-weight: 500;
-    margin-bottom: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #555;
+
+    &:hover {
+      background: #f0f0ff;
+    }
+
+    &.active {
+      background: #7b61ff;
+      color: white;
+      border-color: #7b61ff;
+      box-shadow: 0 3px 12px rgba(123, 97, 255, 0.25);
+    }
   }
-  
-  .widget-value {
-    font-size: 1.6rem;
+}
+.loan-positive {
+  color: #111; // black
+}
+
+.loan-negative {
+  color: #e53935; // red
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+
+  h2 {
+    margin: 0 12px;
     font-weight: 700;
   }
-  
-  .red {
-    background-color: #ef5350;
-  }
-  
-  .calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    padding: 0 10px;
-  }
-  
-  .day {
-    font-weight: 600;
-    text-align: center;
-    font-size: 0.95rem;
-    padding: 10px 0;
-  }
-  
-  .date-cell {
-    height: 50px;
-    border-radius: 8px;
-    background-color: #f3f6fc;
-    border: 1px solid #e0e0e0;
-    transition: 0.2s ease;
-  }
-  
-  .date-cell:hover {
-    background-color: #e8f0fe;
+
+  .arrow-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
     cursor: pointer;
   }
 
-  .mat-expansion-panel {
-    background-color: white !important;
-    border-radius: 12px;
-    margin-top: 40px;
-    box-shadow: none;
-    border: 1px solid #f0f0f0;
-  }
-  
-  .mat-expansion-panel-header {
-    font-weight: 600;
-    background-color: #fafafa;
-    border-bottom: 1px solid #eee;
-    padding: 0 16px;
-  }
-  .bills-container {
-    width: 1400px;
-    margin: auto;
-    padding: 20px;
-  }
-  .widget-row {
-    margin: 30px 40px;
-  }
-  .filter-row {
+  .month-selector {
     display: flex;
+    gap: 10px;
     align-items: center;
-    gap: 12px;
-    margin: 30px 0 10px 40px;
+
+    select {
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+  }
+}
+.date-cell {
+  position: relative;
+  height: 70px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #f6f8fb;
+  transition: background 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; // 👈 Keep date number top-left
+  justify-content: flex-start;
+  text-align: left;
+
+  &:hover {
+    background-color: #e6ecf8;
+    cursor: pointer;
+  }
+  .date-number {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 15px;
+    margin: 4px;
+  }
+
+    .due-label {
+      font-size: 20px;
+      font-weight: 700;
+      color: #5c3bff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+    
+  }
+
+  .custom-tooltip {
+    position: fixed;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 12px 16px;
+    width: 240px;
+    z-index: 1000;
+    font-size: 14px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    pointer-events: none;
+    animation: fadeInUp 0.25s ease-in-out;
+  
+    .tooltip-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+      color: #5c3bff;
+    }
+  
+    .tooltip-amount {
+      font-weight: 500;
+      font-size: 15px;
+      color: #333;
+      margin-bottom: 4px;
+    }
+  
+    .tooltip-date {
+      font-size: 13px;
+      color: #888;
+    }
   }
   
-  select {
-    padding: 6px 12px;
-    font-size: 0.95rem;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    outline: none;
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   

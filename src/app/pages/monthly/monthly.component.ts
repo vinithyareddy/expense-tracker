@@ -1,8 +1,6 @@
-// ✅ monthly.component.ts
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
-
 
 export interface Expense extends firebase.firestore.DocumentData {
   id?: string;
@@ -13,7 +11,6 @@ export interface Expense extends firebase.firestore.DocumentData {
   method: string;
   location: string;
 }
-
 
 interface MonthlySummary {
   monthYear: string;
@@ -29,6 +26,7 @@ interface MonthlySummary {
 })
 export class MonthlyComponent implements OnInit {
   monthlySummaries: MonthlySummary[] = [];
+  filterText: string = '';
 
   constructor(private firestore: AngularFirestore) {}
 
@@ -37,8 +35,7 @@ export class MonthlyComponent implements OnInit {
       const grouped: { [monthYear: string]: { received: number; spent: number } } = {};
 
       data.forEach(expense => {
-        const date =
-        (expense.date as any)?.toDate?.() ?? new Date(expense.date);      
+        const date = (expense.date as any)?.toDate?.() ?? new Date(expense.date);
         if (isNaN(date.getTime())) return;
 
         const key = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
@@ -62,5 +59,17 @@ export class MonthlyComponent implements OnInit {
         saved: received - spent
       }));
     });
+  }
+
+  filteredSummaries(): MonthlySummary[] {
+    if (!this.filterText) return this.monthlySummaries;
+
+    const lower = this.filterText.toLowerCase();
+    return this.monthlySummaries.filter(summary =>
+      summary.monthYear.toLowerCase().includes(lower) ||
+      summary.received.toString().includes(lower) ||
+      summary.spent.toString().includes(lower) ||
+      summary.saved.toString().includes(lower)
+    );
   }
 }

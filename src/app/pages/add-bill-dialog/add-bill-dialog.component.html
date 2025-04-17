@@ -1,0 +1,106 @@
+<h2 mat-dialog-title>Add New Bill</h2>
+
+<div mat-dialog-content class="form-container">
+  <!-- Bill Type -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Bill Type</mat-label>
+    <mat-select [(value)]="bill.type">
+      <mat-option value="regular">Regular Bill</mat-option>
+      <mat-option value="credit">Credit Card</mat-option>
+      <mat-option value="loan">Personal Loan</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Name -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Enter bill name" [(ngModel)]="bill.name" name="name" />
+  </mat-form-field>
+
+  <!-- Amount -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Amount</mat-label>
+    <input
+      matInput
+      type="number"
+      [(ngModel)]="bill.amount"
+      (focus)="bill.amount === 0 && (bill.amount = null)"
+    />
+  </mat-form-field>
+
+  <!-- Monthly Payment (all except when noMonthlyPayment selected) -->
+  <mat-form-field appearance="outline" class="full-width" *ngIf="bill.type !== 'loan' || !bill.noMonthlyPayment">
+    <mat-label>Monthly Payment</mat-label>
+    <input
+      matInput
+      type="number"
+      [(ngModel)]="bill.monthlyPayment"
+      [disabled]="bill.type === 'loan' && bill.noMonthlyPayment"
+      (focus)="bill.monthlyPayment === 0 && (bill.monthlyPayment = null)"
+    />
+  </mat-form-field>
+
+  <!-- No Monthly Payment checkbox (only for Personal Loan) -->
+  <mat-checkbox *ngIf="bill.type === 'loan'" [(ngModel)]="bill.noMonthlyPayment">
+    Not Applicable (No Monthly Payment)
+  </mat-checkbox>
+
+  <!-- Loan Type Options -->
+  <div *ngIf="bill.type === 'loan'" class="full-width">
+    <label class="sub-label">Loan Type</label>
+    <mat-radio-group [(ngModel)]="bill.loanDirection" class="loan-direction-group">
+      <mat-radio-button value="give">I Gave a Loan</mat-radio-button>
+      <mat-radio-button value="take">I Took a Loan</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <!-- Loaner Name -->
+  <mat-form-field appearance="outline" class="full-width" *ngIf="bill.type === 'loan'">
+    <mat-label>Loaner Name</mat-label>
+    <input matInput [(ngModel)]="bill.loaner" placeholder="Who gave the loan?" />
+  </mat-form-field>
+
+  <!-- Borrower Name -->
+  <mat-form-field appearance="outline" class="full-width" *ngIf="bill.type === 'loan'">
+    <mat-label>Borrower Name</mat-label>
+    <input matInput [(ngModel)]="bill.borrower" placeholder="Who received the loan?" />
+  </mat-form-field>
+
+  <!-- Due Date -->
+  <mat-form-field appearance="outline" class="full-width" *ngIf="!bill.autoDueDate">
+    <mat-label>Due Date</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="bill.dueDate" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+
+  <!-- Auto-calculate Due Date -->
+  <mat-checkbox [(ngModel)]="bill.autoDueDate">
+    Auto-calculate due date from monthly payment
+  </mat-checkbox>
+  <p *ngIf="calculatedInstallments && !bill.noMonthlyPayment" class="installment-info">
+    🔁 Repeats monthly for <strong>{{ calculatedInstallments }}</strong> months
+  </p>
+  <!-- Repeat Monthly -->
+<mat-checkbox [(ngModel)]="bill.repeatMonthly">
+  Repeat every month until paid
+</mat-checkbox>
+
+  
+  <!-- Preview Auto-calculated Date -->
+  <p *ngIf="bill.autoDueDate && calculatedDueDate">
+    📅 Estimated completion: <strong>{{ calculatedDueDate | date: 'longDate' }}</strong>
+  </p>
+
+  <!-- Category -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Category</mat-label>
+    <input matInput [(ngModel)]="bill.category" />
+  </mat-form-field>
+</div>
+
+<!-- Actions -->
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" (click)="addBill()">Add Bill</button>
+</div>

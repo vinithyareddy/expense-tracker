@@ -3,9 +3,27 @@
 }
 
 a {
-  color: white;
+  color: #f5f5f5;
   text-decoration: none;
-  margin-left: 12px;
+  margin-left: 20px;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #ffcc70;
+}
+
+a.active-link::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #ffcc70;
+  border-radius: 2px;
 }
 
 .navbar {
@@ -13,9 +31,24 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: #201b37;
+  background: linear-gradient(to right, #3e1e68, #261447);
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid #4b2c77;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+  color: #ffcc70;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
 }
 
 .user-info {
@@ -25,4 +58,8 @@ a {
   p {
     margin: 0.25rem 0;
   }
+}
+
+mat-icon {
+  color: white;
 }
