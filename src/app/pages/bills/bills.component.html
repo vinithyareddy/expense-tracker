@@ -111,7 +111,7 @@ s
   <!-- 💳 Credit Card Bills -->
   <div *ngIf="selectedBillType === 'credit'" class="bill-section">
     <h3 class="section-heading">💳 Credit Card Bills</h3>
-    <div *ngFor="let bill of creditBills" class="card-widget">
+    <div *ngFor="let bill of creditBills" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }" >
       <div class="card-left">
         <div class="card-details">
           <div class="card-title"> 💳 {{ bill.name }}</div>
@@ -119,12 +119,17 @@ s
         </div>
       </div>
       <div class="card-right">
-        <div class="card-amount">₹{{ bill.amount }}</div>
-        <div class="card-meta">
+        <div class="card-amount">
+          ₹{{ bill.amount - (bill.paidCount || 0) * bill.monthlyPayment }}
+        </div>
+                <div class="card-meta">
           <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
           <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
+          <p>Monthly Payment: ₹{{ bill.monthlyPayment }}</p>
+
           <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
           <p *ngIf="bill.installments">Paid Amount: ₹{{ (bill.paidCount || 0) * bill.monthlyPayment || 0 }}</p>
+
         </div>
         <div class="action-buttons">
           <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
@@ -141,7 +146,7 @@ s
   <!-- 🧳 Regular Bills -->
   <div *ngIf="selectedBillType === 'regular'" class="bill-section">
     <h3 class="section-heading">🧳 Regular Bills</h3>
-    <div *ngFor="let bill of regularBills" class="card-widget">
+    <div *ngFor="let bill of regularBills" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }">
       <div class="card-left">
         <div class="card-details">
           <div class="card-title">🏠 {{ bill.name }}</div>
@@ -152,6 +157,8 @@ s
         <div class="card-meta">
           <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
           <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
+          <p>Monthly Payment: ₹{{ bill.monthlyPayment }}</p>
+
           <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
           <p *ngIf="bill.installments">Paid Amount: ₹{{ (bill.paidCount || 0) * bill.monthlyPayment || 0 }}</p>
         </div>
@@ -171,7 +178,7 @@ s
 <!-- 🤝 Personal Loans -->
 <div *ngIf="selectedBillType === 'loans'" class="bill-section">
   <h3 class="section-heading">🤝 Personal Loans</h3>
-  <div *ngFor="let bill of loanBills; let i = index" class="card-widget">
+  <div *ngFor="let bill of loanBills; let i = index" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }">
     <div class="card-left">
       <div class="card-details">
         <div class="card-title">🤝 {{ bill.name }}</div>
@@ -183,6 +190,8 @@ s
       <div class="card-meta">
         <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
         <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
+        <p>Monthly Payment: ₹{{ bill.monthlyPayment }}</p>
+
         <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
         <p *ngIf="bill.installments">Paid Amount: ₹{{ (bill.paidCount || 0) * bill.monthlyPayment || 0 }}</p>
       </div>

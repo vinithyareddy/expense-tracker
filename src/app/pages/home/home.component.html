@@ -1,38 +1,50 @@
-
-
+// ✅ home.component.html
 <div class="dashboard-container">
   <!-- Summary Cards -->
   <div class="summary-cards">
     <mat-card class="card received">
       <span class="cardname">Total Received:</span>
       <span class="currency">{{ totalReceived | currency: 'USD' }}</span>
-     </mat-card>
+    </mat-card>
     <mat-card class="card spent">
       <span class="cardname">Total Spent:</span>
-      <span class="currency">{{ totalSpent | currency: 'USD' }}</span> </mat-card>
+      <span class="currency">{{ totalSpent | currency: 'USD' }}</span>
+    </mat-card>
     <mat-card class="card saved">
-      <span class="cardname">Total Saved:</span> 
-      <span class="currency">{{ totalSaved | currency: 'USD' }}</span></mat-card>
+      <span class="cardname">Total Saved:</span>
+      <span class="currency">{{ totalSaved | currency: 'USD' }}</span>
+    </mat-card>
+    <mat-card class="card card-amount">
+      <span class="cardname">Total Card Amount:</span>
+      <span class="currency">{{ totalCardAmount | currency: 'USD' }}</span>
+    </mat-card>
   </div>
 
   <!-- Charts Row 1: Line + Pie -->
   <div class="top-row">
     <div class="chart">
-      <h3>Savings Growth (Line)</h3>
-      <canvas #lineChart></canvas> <!-- Updated with ViewChild reference -->
+      <h3>Savings Growth</h3>
+      <canvas #lineChart></canvas>
     </div>
-
     <div class="chart">
-      <h3>Spending by Category (Pie)</h3>
-      <canvas #pieChart></canvas> <!-- Updated with ViewChild reference -->
+      <h3>Spending by Category</h3>
+      <canvas #pieChart></canvas>
     </div>
   </div>
 
   <!-- Bar Chart Row -->
   <div class="bottom-row">
     <div class="chart bar-chart">
-      <h3>Monthly Spend (Bar)</h3>
-      <canvas #barChart></canvas> <!-- Updated with ViewChild reference -->
+      <h3>Monthly Spend</h3>
+      <canvas #barChart></canvas>
+    </div>
+  </div>
+
+  <!-- Credit Card Line Chart Row -->
+  <div class="bottom-row">
+    <div class="chart bar-chart">
+      <h3>Credit Card Balance Over Time</h3>
+      <canvas #cardLineChart></canvas>
     </div>
   </div>
 </div>

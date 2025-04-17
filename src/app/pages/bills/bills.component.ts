@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddBillDialogComponent } from '../add-bill-dialog/add-bill-dialog.component';
+import { Bill } from '../../models/bill.model';
 
 @Component({
   selector: 'app-bills',
   templateUrl: './bills.component.html',
-  styleUrls: ['./bills.component.scss'],
+  styleUrls: ['./bills.component.scss']
 })
 export class BillsComponent implements OnInit {
   selectedBillType = 'credit';
@@ -19,7 +20,6 @@ export class BillsComponent implements OnInit {
   tooltipY = 0;
   totalDue: number = 0;
   totalPaid: number = 0;
-  
 
   currentMonth = new Date().getMonth();
   currentYear = new Date().getFullYear();
@@ -31,52 +31,65 @@ export class BillsComponent implements OnInit {
 
   ngOnInit(): void {
     for (let y = 2000; y <= 2040; y++) this.years.push(y);
-
+  
     const stored = localStorage.getItem('bills');
     this.allBills = stored ? JSON.parse(stored) : [];
-
+  
+    // ✅ Normalize missing fields
+    this.allBills = this.allBills.map((bill: any) => ({
+      ...bill,
+      paidCount: bill.paidCount ?? 0,
+      installments: bill.installments ?? (
+        bill.monthlyPayment && bill.amount
+          ? Math.ceil(bill.amount / bill.monthlyPayment)
+          : 1
+      ),
+      monthlyPayment: bill.monthlyPayment ?? 0,
+      paymentHistory: Array.isArray(bill.paymentHistory) ? bill.paymentHistory : [],
+      loanDirection: bill.type === 'loan' ? (bill.loanDirection ?? 'give') : undefined
+    }));
+  
+    this.saveToStorage(); // ✅ Save corrected data back
+  
     this.updatePersonalLoanAmount();
     this.calculateTotals();
     this.refreshCalendar();
   }
+  
 
   refreshCalendar(): void {
     const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
     const startDay = firstDayOfMonth.getDay();
     const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
-  
+
     const days: { date: Date, dueBills: any[] }[] = [];
-  
-    // Add blank cells before the month starts
+
     for (let i = 0; i < startDay; i++) {
       days.push({ date: new Date(0), dueBills: [] });
     }
-  
-    // Now generate each actual calendar day
+
     for (let i = 1; i <= daysInMonth; i++) {
       const currentDate = new Date(this.currentYear, this.currentMonth, i);
-  
       const dueBills = this.allBills.filter((bill) => {
         const originalDue = bill.dueDate ? new Date(bill.dueDate) : null;
         if (!originalDue || bill.paidCount >= bill.installments) return false;
-  
+
         const monthsSinceDue =
           (this.currentYear - originalDue.getFullYear()) * 12 +
           (this.currentMonth - originalDue.getMonth());
-  
+
         return (
           monthsSinceDue >= 0 &&
           monthsSinceDue < bill.installments &&
           currentDate.getDate() === originalDue.getDate()
         );
       });
-  
+
       days.push({ date: currentDate, dueBills });
     }
-  
+
     this.calendarDays = days;
   }
-  
 
   openAddBillDialog(): void {
     const dialogRef = this.dialog.open(AddBillDialogComponent, {
@@ -104,15 +117,32 @@ export class BillsComponent implements OnInit {
   }
 
   get creditBills() {
-    return this.allBills.filter(bill => bill.type === 'credit');
+    return this.allBills.filter(bill => {
+      const paidCount = bill.paidCount || 0;
+      const installments = bill.installments || 1;
+      const monthly = bill.monthlyPayment || 0;
+
+      const isNotFullyPaid = paidCount < installments;
+      const isCreditCard = bill.type === 'credit';
+
+      return isCreditCard && isNotFullyPaid;
+    });
   }
 
   get regularBills() {
-    return this.allBills.filter(bill => bill.type === 'regular');
+    return this.allBills.filter(bill => {
+      const paidCount = bill.paidCount || 0;
+      const installments = bill.installments || 1;
+      return bill.type === 'regular' && paidCount < installments;
+    });
   }
 
   get loanBills() {
-    return this.allBills.filter(bill => bill.type === 'loan');
+    return this.allBills.filter(bill => {
+      const paidCount = bill.paidCount || 0;
+      const installments = bill.installments || 1;
+      return bill.type === 'loan' && paidCount < installments;
+    });
   }
 
   getMonthName(index: number): string {
@@ -143,9 +173,37 @@ export class BillsComponent implements OnInit {
 
   markInstallmentPaid(bill: any): void {
     bill.paidCount = (bill.paidCount || 0) + 1;
+
+    if (!bill.paymentHistory) {
+      bill.paymentHistory = [];
+    }
+    bill.paymentHistory.push(Date.now());
+
     this.saveToStorage();
+    this.updateCardBalanceHistory();
     this.calculateTotals();
     this.refreshCalendar();
+  }
+
+  updateCardBalanceHistory(): void {
+    const stored = localStorage.getItem('bills');
+    const bills: Bill[] = stored ? JSON.parse(stored) : [];
+    const creditBills = bills.filter(b => b.type === 'credit');
+
+    let totalRemaining = 0;
+    creditBills.forEach(bill => {
+      const paid = (bill.paidCount || 0) * (bill.monthlyPayment || 0);
+      const remaining = Math.max(bill.amount - paid, 0);
+      totalRemaining += remaining;
+    });
+
+    const now = new Date();
+    const currentMonthKey = `${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}`;
+
+    const history = JSON.parse(localStorage.getItem('cardBalanceHistory') || '{}');
+    history[currentMonthKey] = totalRemaining;
+
+    localStorage.setItem('cardBalanceHistory', JSON.stringify(history));
   }
 
   deleteBill(bill: any): void {
@@ -171,40 +229,49 @@ export class BillsComponent implements OnInit {
     }
     this.personalLoanAmount = total;
   }
-
   calculateTotals(): void {
     let due = 0;
     let paid = 0;
-
+  
+    const selectedMonth = this.currentMonth;
+    const selectedYear = this.currentYear;
+  
     for (let bill of this.allBills) {
-      const dueDate = bill.dueDate ? new Date(bill.dueDate) : null;
-      const paidInstallments = bill.paidCount || 0;
+      const paidCount = bill.paidCount || 0;
+      const installments = bill.installments || 1;
       const monthly = bill.monthlyPayment || 0;
-
-      // DUE for current month only
-      if (
-        dueDate &&
-        dueDate.getFullYear() <= this.currentYear &&
-        dueDate.getMonth() <= this.currentMonth &&
-        paidInstallments < bill.installments
-      ) {
-        if (bill.noMonthlyPayment || !monthly) {
-          due += bill.amount;
-        } else {
-          due += monthly;
+      const isFullyPaid = paidCount >= installments;
+  
+      if (bill.type === 'loan' && bill.loanDirection === 'give') continue;
+  
+      // 🔵 Total Due: include all bills with remaining installments
+      if (!isFullyPaid) {
+        due += monthly > 0 ? monthly : bill.amount;
+      }
+  
+      // 🟢 Total Paid: sum only payments made this month
+      if (Array.isArray(bill.paymentHistory)) {
+        for (let ts of bill.paymentHistory) {
+          const date = new Date(ts);
+          const isSameMonth = date.getMonth() === selectedMonth && date.getFullYear() === selectedYear;
+          if (isSameMonth) {
+            paid += monthly > 0 ? monthly : bill.amount;
+          }
         }
       }
-
-      // PAID: always consider paid installments
-      if (bill.noMonthlyPayment || !monthly) {
-        paid += paidInstallments > 0 ? bill.amount : 0;
-      } else {
-        paid += paidInstallments * monthly;
-      }
     }
-
+  
     this.totalDue = due;
     this.totalPaid = paid;
-    console.log('Due:', due, 'Paid:', paid, 'All Bills:', this.allBills);
+  
+    console.log({
+      selectedMonth,
+      selectedYear,
+      totalDue: this.totalDue,
+      totalPaid: this.totalPaid,
+      allBills: this.allBills,
+    });
   }
+  
+  
 }

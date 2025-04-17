@@ -648,4 +648,9 @@ mat-expansion-panel-header {
       transform: translateY(0);
     }
   }
+  .fade-out {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s ease-in-out;
+  }
   

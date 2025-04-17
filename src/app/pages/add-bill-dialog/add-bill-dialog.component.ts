@@ -32,9 +32,16 @@ export class AddBillDialogComponent {
     if (this.bill.autoDueDate && this.calculatedDueDate) {
       this.bill.dueDate = this.calculatedDueDate;
     }
-    this.dialogRef.close(this.bill);
+  
+    const result = {
+      ...this.bill,
+      noMonthlyPayment: this.bill.noMonthlyPayment, // ✅ ensure it's carried forward
+      repeatMonthly: this.bill.repeatMonthly,       // optional
+    };
+  
+    this.dialogRef.close(result);
   }
-
+  
   get calculatedInstallments(): number | null {
     if (
       this.bill.amount !== null &&

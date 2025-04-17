@@ -1,8 +1,10 @@
+// ✅ home.component.ts
 import { Component, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ChartConfiguration, ChartOptions, Chart } from 'chart.js';
-import { Expense } from '../expenses/expenses.component';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Expense } from '../expenses/expenses.component';
+import { Bill } from '../../models/bill.model'; // adjust if inside nested folders
 
 Chart.register(ChartDataLabels);
 
@@ -15,6 +17,26 @@ export class HomeComponent implements OnInit, OnChanges {
   totalReceived = 0;
   totalSpent = 0;
   totalSaved = 0;
+  totalCardAmount = 0;
+
+  @ViewChild('pieChart') pieChart: any;
+  @ViewChild('barChart') barChart: any;
+  @ViewChild('lineChart') lineChart: any;
+  @ViewChild('cardLineChart') cardLineChart: any;
+
+  cardBalanceChartData: ChartConfiguration<'line'>['data'] = {
+    labels: [],
+    datasets: [
+      {
+        label: 'Card Balance',
+        data: [],
+        borderColor: '#9c27b0',
+        backgroundColor: 'rgba(156, 39, 176, 0.2)',
+        tension: 0.4,
+        fill: true
+      }
+    ]
+  };
 
   lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
@@ -30,7 +52,6 @@ export class HomeComponent implements OnInit, OnChanges {
     ]
   };
 
-  // 👇 Updated pie chart to doughnut chart
   pieChartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: [],
     datasets: [
@@ -54,14 +75,11 @@ export class HomeComponent implements OnInit, OnChanges {
     ]
   };
 
-  @ViewChild('pieChart') pieChart: any;
-  @ViewChild('barChart') barChart: any;
-  @ViewChild('lineChart') lineChart: any;
-
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private firestore: AngularFirestore) { }
 
   ngOnInit() {
     this.loadData();
+    this.loadBills();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -124,10 +142,59 @@ export class HomeComponent implements OnInit, OnChanges {
     });
   }
 
+  loadBills() {
+    const history = JSON.parse(localStorage.getItem('cardBalanceHistory') || '{}');
+  
+    const sortedMonths = Object.keys(history).sort((a, b) => {
+      const [aMonth, aYear] = a.split(' ');
+      const [bMonth, bYear] = b.split(' ');
+      return new Date(`${aMonth} 1, ${aYear}`).getTime() - new Date(`${bMonth} 1, ${bYear}`).getTime();
+    });
+  
+    this.cardBalanceChartData.labels = sortedMonths;
+    this.cardBalanceChartData.datasets[0].data = sortedMonths.map(m => Number(history[m])) as number[];
+    this.totalCardAmount = Number(this.cardBalanceChartData.datasets[0].data.at(-1)) || 0;
+    this.cardBalanceChartData.datasets[0].data = sortedMonths.map(m => {
+      const val = history[m];
+      return typeof val === 'number' ? val : 0;
+    }) as number[];
+    
+  
+    setTimeout(() => {
+      if (this.cardLineChart && !this.cardLineChart.chart) {
+        this.cardLineChart.chart = new Chart(this.cardLineChart.nativeElement, {
+          type: 'line',
+          data: this.cardBalanceChartData,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'top' },
+              datalabels: {
+                anchor: 'end',
+                align: 'top',
+                font: { size: 13, weight: 'bold' },
+                color: '#6a11cb',
+                formatter: (value: number) => {
+                  return `$${value.toLocaleString(undefined, {
+                    minimumFractionDigits: value % 1 === 0 ? 0 : 1,
+                    maximumFractionDigits: 2
+                  })}`;
+                }
+              }
+            },
+            layout: { padding: { top: 10, bottom: 10, right: 30 } }
+          },
+          plugins: [ChartDataLabels]
+        });
+      }
+    }, 100);
+  }
+  
+  
   updateCharts() {
     if (this.pieChart && !this.pieChart.chart) {
       this.pieChart.chart = new Chart(this.pieChart.nativeElement, {
-        type: 'doughnut', // 👈 Changed from 'pie'
+        type: 'doughnut',
         data: this.pieChartData,
         options: this.pieChartOptions
       });
@@ -148,7 +215,6 @@ export class HomeComponent implements OnInit, OnChanges {
     }
   }
 
-  // 👇 Updated type from 'pie' to 'doughnut'
   pieChartOptions: ChartOptions<'doughnut'> = {
     responsive: true,
     plugins: {
@@ -160,10 +226,10 @@ export class HomeComponent implements OnInit, OnChanges {
           const total = data.reduce((a, b) => a + b, 0);
           return total ? ((value / total) * 100).toFixed(0) + '%' : '';
         },
-        font: { weight: 'bold' as const, size: 14 }
+        font: { weight: 'bold', size: 14 }
       }
     },
-    cutout: '60%' // 🍩 thickness of donut hole
+    cutout: '60%'
   };
 
   pieChartPlugins = [ChartDataLabels];
