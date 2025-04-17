@@ -1,10 +1,9 @@
-// ✅ home.component.ts
-import { Component, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { ChartConfiguration, ChartOptions, Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Expense } from '../expenses/expenses.component';
-import { Bill } from '../../models/bill.model'; // adjust if inside nested folders
+import { Bill } from '../../models/bill.model';
 
 Chart.register(ChartDataLabels);
 
@@ -13,7 +12,7 @@ Chart.register(ChartDataLabels);
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnChanges {
+export class HomeComponent implements OnInit, OnChanges, OnDestroy {
   totalReceived = 0;
   totalSpent = 0;
   totalSaved = 0;
@@ -75,11 +74,28 @@ export class HomeComponent implements OnInit, OnChanges {
     ]
   };
 
-  constructor(private firestore: AngularFirestore) { }
+  constructor(private firestore: AngularFirestore) {}
 
   ngOnInit() {
     this.loadData();
     this.loadBills();
+
+    // ✅ Auto-refresh Home on Bills page changes
+    window.addEventListener('storage', this.handleStorageChange.bind(this));
+  }
+
+  ngOnDestroy() {
+    window.removeEventListener('storage', this.handleStorageChange.bind(this));
+  }
+
+  handleStorageChange(event: StorageEvent) {
+    if (
+      event.key === 'cardBalanceHistory' ||
+      event.key === 'totalCreditCardAmount' ||
+      event.key === 'bills'
+    ) {
+      this.loadBills();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -143,23 +159,27 @@ export class HomeComponent implements OnInit, OnChanges {
   }
 
   loadBills() {
-    const history = JSON.parse(localStorage.getItem('cardBalanceHistory') || '{}');
-  
+    const historyRaw = localStorage.getItem('cardBalanceHistory') || '{}';
+    const history: Record<string, number> = JSON.parse(historyRaw);
+
     const sortedMonths = Object.keys(history).sort((a, b) => {
       const [aMonth, aYear] = a.split(' ');
       const [bMonth, bYear] = b.split(' ');
       return new Date(`${aMonth} 1, ${aYear}`).getTime() - new Date(`${bMonth} 1, ${bYear}`).getTime();
     });
-  
+
     this.cardBalanceChartData.labels = sortedMonths;
-    this.cardBalanceChartData.datasets[0].data = sortedMonths.map(m => Number(history[m])) as number[];
-    this.totalCardAmount = Number(this.cardBalanceChartData.datasets[0].data.at(-1)) || 0;
-    this.cardBalanceChartData.datasets[0].data = sortedMonths.map(m => {
+
+    const chartData = sortedMonths.map(m => {
       const val = history[m];
-      return typeof val === 'number' ? val : 0;
+      return typeof val === 'number' ? val : Number(val) || 0;
     }) as number[];
-    
-  
+
+    this.cardBalanceChartData.datasets[0].data = chartData;
+
+    const latestMonth = sortedMonths.at(-1);
+    this.totalCardAmount = latestMonth ? (history[latestMonth] || 0) : 0;
+
     setTimeout(() => {
       if (this.cardLineChart && !this.cardLineChart.chart) {
         this.cardLineChart.chart = new Chart(this.cardLineChart.nativeElement, {
@@ -186,11 +206,13 @@ export class HomeComponent implements OnInit, OnChanges {
           },
           plugins: [ChartDataLabels]
         });
+      } else if (this.cardLineChart?.chart) {
+        this.cardLineChart.chart.data = this.cardBalanceChartData;
+        this.cardLineChart.chart.update();
       }
     }, 100);
   }
-  
-  
+
   updateCharts() {
     if (this.pieChart && !this.pieChart.chart) {
       this.pieChart.chart = new Chart(this.pieChart.nativeElement, {

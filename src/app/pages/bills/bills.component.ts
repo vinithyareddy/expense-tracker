@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddBillDialogComponent } from '../add-bill-dialog/add-bill-dialog.component';
 import { Bill } from '../../models/bill.model';
+import { DataSyncService } from 'src/app/services/data-sync.service'; // adjust path if neede
 
 @Component({
   selector: 'app-bills',
@@ -24,18 +25,19 @@ export class BillsComponent implements OnInit {
   currentMonth = new Date().getMonth();
   currentYear = new Date().getFullYear();
   months = ['January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'];
+    'July', 'August', 'September', 'October', 'November', 'December'];
   years: number[] = [];
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog,   private dataSyncService: DataSyncService // ✅ inject here
+  ) { }
 
   ngOnInit(): void {
     for (let y = 2000; y <= 2040; y++) this.years.push(y);
-  
+
     const stored = localStorage.getItem('bills');
     this.allBills = stored ? JSON.parse(stored) : [];
-  
-    // ✅ Normalize missing fields
+
+    // Normalize
     this.allBills = this.allBills.map((bill: any) => ({
       ...bill,
       paidCount: bill.paidCount ?? 0,
@@ -48,14 +50,18 @@ export class BillsComponent implements OnInit {
       paymentHistory: Array.isArray(bill.paymentHistory) ? bill.paymentHistory : [],
       loanDirection: bill.type === 'loan' ? (bill.loanDirection ?? 'give') : undefined
     }));
-  
-    this.saveToStorage(); // ✅ Save corrected data back
-  
+
+    this.saveToStorage();
+
     this.updatePersonalLoanAmount();
     this.calculateTotals();
     this.refreshCalendar();
+
+    // ✅ FIX: Update balance history on init too!
+    this.updateCardBalanceHistory();  // ← Add this line
   }
-  
+
+
 
   refreshCalendar(): void {
     const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
@@ -111,6 +117,15 @@ export class BillsComponent implements OnInit {
         this.updateTotalCreditCardAmount();
 
       }
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'cardBalanceHistory',
+        newValue: localStorage.getItem('cardBalanceHistory') || ''
+      }));
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'totalCreditCardAmount',
+        newValue: localStorage.getItem('totalCreditCardAmount') || ''
+      }));
+      
     });
   }
 
@@ -208,6 +223,10 @@ export class BillsComponent implements OnInit {
     history[currentMonthKey] = totalRemaining;
 
     localStorage.setItem('cardBalanceHistory', JSON.stringify(history));
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'cardBalanceHistory',
+      newValue: JSON.stringify(history)
+    }));
   }
 
   deleteBill(bill: any): void {
@@ -219,9 +238,31 @@ export class BillsComponent implements OnInit {
       this.calculateTotals();
       this.refreshCalendar();
       this.updateTotalCreditCardAmount();
+      this.updateCardBalanceHistory(); // ✅ make sure balance history updates
 
+      // ✅ Clear total credit if no credit bills left
+      const creditBills = this.allBills.filter(b => b.type === 'credit');
+      if (creditBills.length === 0) {
+        localStorage.setItem('totalCreditCardAmount', '0');
+        
+
+        const now = new Date();
+        const currentMonthKey = `${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}`;
+        const history = JSON.parse(localStorage.getItem('cardBalanceHistory') || '{}');
+        history[currentMonthKey] = 0;
+        localStorage.setItem('cardBalanceHistory', JSON.stringify(history));
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'totalCreditCardAmount',
+          newValue: '0'
+        }));
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: 'cardBalanceHistory',
+          newValue: JSON.stringify(history)
+        }));
+      }
     }
   }
+
 
   updateTooltipPosition(event: MouseEvent): void {
     this.tooltipX = event.clientX + 10;
@@ -238,20 +279,20 @@ export class BillsComponent implements OnInit {
   calculateTotals(): void {
     let due = 0;
     let paid = 0;
-  
+
     const selectedMonth = this.currentMonth;
     const selectedYear = this.currentYear;
-  
+
     for (let bill of this.allBills) {
       const dueDate = bill.dueDate ? new Date(bill.dueDate) : null;
       const monthly = bill.monthlyPayment || 0;
       const paidCount = bill.paidCount || 0;
       const installments = bill.installments || 1;
       const isFullyPaid = paidCount >= installments;
-  
+
       // 🚫 Skip loan 'give'
       if (bill.type === 'loan' && bill.loanDirection === 'give') continue;
-  
+
       // ✅ Count paid this month
       let paidThisMonth = 0;
       if (Array.isArray(bill.paymentHistory)) {
@@ -263,13 +304,13 @@ export class BillsComponent implements OnInit {
           }
         }
       }
-  
+
       // ✅ TOTAL DUE
       if (!isFullyPaid && dueDate) {
         const monthsSinceStart =
           (selectedYear - dueDate.getFullYear()) * 12 +
           (selectedMonth - dueDate.getMonth());
-  
+
         const monthsDue = Math.min(installments - paidCount, monthsSinceStart + 1);
         if (monthsDue > 0) {
           // Subtract the count of this month's payments from the due
@@ -280,10 +321,10 @@ export class BillsComponent implements OnInit {
         }
       }
     }
-  
+
     this.totalDue = due;
     this.totalPaid = paid;
-  
+
     console.log({
       selectedMonth,
       selectedYear,
@@ -292,19 +333,35 @@ export class BillsComponent implements OnInit {
       allBills: this.allBills
     });
   }
-  
+
   updateTotalCreditCardAmount(): void {
     const creditBills = this.allBills.filter(b => b.type === 'credit');
     let total = 0;
-  
+    const now = new Date();
+    const currentMonthKey = `${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}`;
+
+    const history = JSON.parse(localStorage.getItem('cardBalanceHistory') || '{}');
+    history[currentMonthKey] = total;
+
+    localStorage.setItem('cardBalanceHistory', JSON.stringify(history));
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'totalCreditCardAmount',
+      newValue: JSON.stringify(total)
+    }));
+
+
     for (let bill of creditBills) {
       const paidAmount = (bill.paidCount || 0) * (bill.monthlyPayment || 0);
       const remaining = Math.max(bill.amount - paidAmount, 0);
       total += remaining;
     }
-  
+
     localStorage.setItem('totalCreditCardAmount', JSON.stringify(total));
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: 'totalCreditCardAmount',
+      newValue: JSON.stringify(total)
+    }));
   }
-  
-  
+
+
 }
