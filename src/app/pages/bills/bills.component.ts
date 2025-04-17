@@ -237,25 +237,39 @@ export class BillsComponent implements OnInit {
     const selectedYear = this.currentYear;
   
     for (let bill of this.allBills) {
+      const dueDate = bill.dueDate ? new Date(bill.dueDate) : null;
+      const monthly = bill.monthlyPayment || 0;
       const paidCount = bill.paidCount || 0;
       const installments = bill.installments || 1;
-      const monthly = bill.monthlyPayment || 0;
       const isFullyPaid = paidCount >= installments;
   
+      // 🚫 Skip loan 'give'
       if (bill.type === 'loan' && bill.loanDirection === 'give') continue;
   
-      // 🔵 Total Due: include all bills with remaining installments
-      if (!isFullyPaid) {
-        due += monthly > 0 ? monthly : bill.amount;
-      }
-  
-      // 🟢 Total Paid: sum only payments made this month
+      // ✅ Count paid this month
+      let paidThisMonth = 0;
       if (Array.isArray(bill.paymentHistory)) {
         for (let ts of bill.paymentHistory) {
-          const date = new Date(ts);
-          const isSameMonth = date.getMonth() === selectedMonth && date.getFullYear() === selectedYear;
-          if (isSameMonth) {
+          const dt = new Date(ts);
+          if (dt.getMonth() === selectedMonth && dt.getFullYear() === selectedYear) {
             paid += monthly > 0 ? monthly : bill.amount;
+            paidThisMonth += 1;
+          }
+        }
+      }
+  
+      // ✅ TOTAL DUE
+      if (!isFullyPaid && dueDate) {
+        const monthsSinceStart =
+          (selectedYear - dueDate.getFullYear()) * 12 +
+          (selectedMonth - dueDate.getMonth());
+  
+        const monthsDue = Math.min(installments - paidCount, monthsSinceStart + 1);
+        if (monthsDue > 0) {
+          // Subtract the count of this month's payments from the due
+          const effectiveDueCount = Math.max(monthsDue - paidThisMonth, 0);
+          if (monthsDue > 0 && effectiveDueCount > 0) {
+            due += (monthly > 0 ? monthly : bill.amount) * effectiveDueCount;
           }
         }
       }
@@ -269,9 +283,10 @@ export class BillsComponent implements OnInit {
       selectedYear,
       totalDue: this.totalDue,
       totalPaid: this.totalPaid,
-      allBills: this.allBills,
+      allBills: this.allBills
     });
   }
+  
   
   
 }
