@@ -750,3 +750,24 @@ mat-expansion-panel-header {
     }
   }
   
+  .page-header {
+    position: relative;
+    z-index: 2;
+  }
+  .add-bill-btn {
+    z-index: 1001;
+    position: relative;
+  }
+  mat-card, .calendar-header {
+    position: relative;
+    z-index: 0;
+  }
+  .page-wrapper {
+    padding-top: 30px; // height of fixed navbar
+  }
+  .add-bill-btn {
+    z-index: 1001;
+    position: relative;
+    pointer-events: auto; // ✅ ensures it's clickable
+  }
+  

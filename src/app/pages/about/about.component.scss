@@ -6,6 +6,10 @@
   align-items: center;
   padding: 4rem 2rem;
   text-align: center;
+  .about-container {
+    margin-top: 64px; // 👈 matches navbar height
+  }
+  
 }
 
 .hero-section {
@@ -142,6 +146,7 @@
   }
 
   .hero-section {
+    
     h1 {
       font-size: 2rem;
     }

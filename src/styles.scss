@@ -6,6 +6,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 body, html {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
     font-family: 'Roboto', sans-serif;
   }
   
@@ -73,5 +74,39 @@ body, html {
       width: 180px;
       font-size: 12px;
     }
+  }
+  mat-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+  
+  .page-wrapper,
+  .expenses-container {
+    padding-top: 64px; // or the height of your navbar
+  }
+  ::ng-deep .mat-menu-panel.custom-user-menu {
+    min-width: 280px !important;
+    padding: 0 !important;
+  }
+  
+  ::ng-deep .mat-menu-panel.custom-user-menu .mat-menu-content {
+    padding: 12px 0 !important;
+  }
+  
+  ::ng-deep .mat-menu-panel.custom-user-menu .user-info {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.4;
+    max-width: 260px;
+  }
+  
+  ::ng-deep .mat-menu-panel.custom-user-menu .user-info p {
+    margin: 4px 0;
+    font-weight: 500;
   }
   

@@ -1,98 +1,463 @@
-.spacer {
-  flex: 1 1 auto;
-}
+// .spacer {
+//   flex: 1 1 auto;
+// }
 
-a {
-  color: #f5f5f5;
-  text-decoration: none;
-  margin-left: 20px;
-  font-weight: 500;
-  position: relative;
-  transition: color 0.3s;
-}
+// a {
+//   color: #f5f5f5;
+//   text-decoration: none;
+//   margin-left: 20px;
+//   font-weight: 500;
+//   position: relative;
+//   transition: color 0.3s;
+// }
 
-a:hover {
-  color: #ffcc70;
-}
+// a:hover {
+//   color: #ffcc70;
+// }
 
-a.active-link::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #ffcc70;
-  border-radius: 2px;
-}
+// a.active-link::after {
+//   content: '';
+//   position: absolute;
+//   bottom: -6px;
+//   left: 0;
+//   width: 100%;
+//   height: 2px;
+//   background-color: #ffcc70;
+//   border-radius: 2px;
+// }
+
+// .navbar {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   background-color: #3f0d73;
+//   color: white;
+//   padding: 1rem 2rem;
+//   flex-wrap: wrap;
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   z-index: 1000;
+//   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+//   border-bottom: 2px solid #4b2c77;
+
+//   .logo {
+//     font-size: 1.5rem;
+//     font-weight: bold;
+//     display: flex;
+//     align-items: center;
+//     gap: 8px;
+//     color: #ffcc70;
+//     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+//   }
+
+//   .nav-links {
+//     display: flex;
+//     gap: 10px;
+//     align-items: center;
+//     margin-left: 30%;
+
+//     a {
+//       color: white;
+//       font-weight: 500;
+//       text-decoration: none;
+//       transition: color 0.3s ease;
+
+//       &:hover {
+//         color: #ffde59;
+//       }
+//     }
+//   }
+
+//   .user-button {
+//     background: transparent;
+//     border: none;
+//     color: white;
+//     font-size: 1.2rem;
+//     cursor: pointer;
+//     margin-top: 8px;
+//   }
+// }
+
+// .user-info {
+//   padding: 0.5rem 1rem;
+//   font-size: 0.9rem;
+
+//   p {
+//     margin: 0.25rem 0;
+//   }
+// }
+
+// mat-icon {
+//   color: white;
+// }
+
+// /* Responsive Navbar */
+// @media (max-width: 768px) {
+//   .navbar {
+//     flex-direction: column;
+//     align-items: flex-start;
+//     padding: 1rem;
+
+//     .logo {
+//       justify-content: center;
+//       font-size: 1.2rem;
+//       margin-bottom: 0.5rem;
+//       width: 100%;
+//       text-align: center;
+//     }
+
+//     .nav-links {
+//       flex-direction: column;
+//       width: 100%;
+//       align-items: center;
+//       margin-top: 0.5rem;
+//       display: none !important;
+
+//       a {
+//         margin: 6px 0;
+//         font-size: 1rem;
+//       }
+//     }
+
+//     .user-button {
+//       position: absolute;
+//       top: 10px;
+//       right: 12px;
+//     }
+//   }
+// }
+// .logo-wrapper {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   width: 100%;
+
+//   .logo {
+//     font-size: 1.4rem;
+//     font-weight: bold;
+//     color: #ffcc70;
+//   }
+
+//   .menu-toggle {
+//     display: inline;
+//   }
+// }
+
+// @media (max-width: 768px) {
+//   .nav-links {
+//     flex-direction: column;
+//     width: 100%;
+//     align-items: flex-start;
+//     padding-left: 16px;
+//     gap: 10px;
+//     margin-top: 10px;
+//   }
+
+//   .menu-toggle {
+//     display: block;
+//     color: white;
+//     margin-left: auto;
+//   }
+
+//   .user-button {
+//     align-self: flex-end;
+//     margin-top: 8px;
+//   }
+
+//   .navbar {
+//     padding: 12px;
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     flex-direction: row;
+//   }
+// }
+// .navbar {
+//   display: flex;
+//   flex-direction: column;
+//   padding: 1rem;
+//   background: #3f0d73;
+//   color: white;
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   z-index: 1000;
+
+//   .logo-section {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     width: 100%;
+
+//     .logo {
+//       font-size: 1.5rem;
+//       font-weight: bold;
+//       color: #ffcc70;
+//     }
+
+//     .menu-toggle {
+//       background: transparent;
+//       border: none;
+//       color: white;
+//       font-size: 1.5rem;
+//     }
+//   }
+
+//   .nav-links {
+//     display: flex;
+//     gap: 20px;
+//     align-items: center;
+//     margin-top: 8px;
+//   }
+
+//   .mobile-nav-menu {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 10px;
+//     margin-top: 8px;
+
+//     a {
+//       padding: 8px 12px;
+//       color: white;
+//       text-decoration: none;
+//       font-weight: 500;
+//       background-color: rgba(255, 255, 255, 0.05);
+//       border-radius: 8px;
+
+//       &:hover {
+//         background-color: rgba(255, 255, 255, 0.1);
+//       }
+//     }
+//   }
+
+//   .user-button {
+//     position: absolute;
+//     top: 10px;
+//     right: 12px;
+//   }
+// }
+// .mobile-menu-dropdown {
+//   position: absolute;
+//   top: 64px; // below navbar
+//   left: 0;
+//   right: 0;
+//   background-color: #3f0d73;
+//   display: flex;
+//   flex-direction: column;
+//   z-index: 999;
+//   padding: 1rem;
+
+//   a {
+//     color: white;
+//     padding: 10px 0;
+//     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+//     font-weight: 500;
+
+//     &:hover {
+//       background-color: rgba(255, 255, 255, 0.05);
+//     }
+//   }
+// }
+
+// /* Add spacing between menu icon and user icon on mobile */
+// @media (max-width: 768px) {
+//   .navbar {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     flex-direction: row;
+
+//     .logo {
+//       font-size: 1.3rem;
+//       flex-grow: 1;
+//     }
+
+//     .menu-toggle {
+//       margin-right: 8px;
+//     }
+
+//     .user-button {
+//       margin-left: 8px;
+//     }
+//   }
+// }
+// .mobile-controls {
+//   display: none;
+//   gap: 10px;
+// }
+
+// @media (max-width: 768px) {
+//   .nav-links {
+//     flex-direction: column;
+//     width: 100%;
+//     margin-top: 10px;
+
+//     a {
+//       margin: 6px 0;
+//     }
+//   }
+
+//   .mobile-controls {
+//     display: flex;
+//     align-items: center;
+//     margin-left: auto;
+//   }
+
+//   .user-button {
+//     margin-left: 10px; // Adds spacing between menu and user icon
+//   }
+// }
+
+/* === Navbar Layout === */
 
 .navbar {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
-  background: linear-gradient(to right, #3e1e68, #261447);
+  align-items: center;
+  background-color: #3f0d73;
   color: white;
-  font-size: 1.1rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-  border-bottom: 2px solid #4b2c77;
-  position: sticky;
+  padding: 1rem 2rem;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* === Logo Styling === */
 .logo {
-  font-weight: 700;
-  font-size: 1.4rem;
-  letter-spacing: 0.5px;
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #ffcc70;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* === Desktop Nav Links === */
+.nav-links {
   display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #ffcc70;
+}
+
+/* === User Icon === */
+.user-button {
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* === Mobile Controls (Hamburger + User) === */
+.mobile-controls {
+  display: none;
+  gap: 10px;
+  margin-left: auto;
   align-items: center;
 }
 
-.user-info {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+/* === Mobile Menu Dropdown === */
+.mobile-menu-dropdown {
+  display: none;
 
-  p {
-    margin: 0.25rem 0;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background-color: #3f0d73;
+    padding: 1rem;
+    z-index: 999;
+
+    a {
+      color: white;
+      font-weight: 500;
+      padding: 10px 0;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
   }
 }
 
-mat-icon {
-  color: white;
+/* === Mobile View Adjustments === */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important; // hide desktop nav in mobile
+  }
+
+  .mobile-controls {
+    display: flex;
+  }
+
+  .logo {
+    flex-grow: 1;
+  }
+
+  .user-button {
+    margin-left: 8px; // spacing between hamburger and user icon
+  }
 }
-@media screen and (max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap;
-    padding: 1rem;
+/* Style the mat-menu container */
+::ng-deep .mat-menu-panel {
+  min-width: 260px;
+  padding: 12px 0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
 
-    .logo {
-      font-size: 1.2rem;
-      flex-basis: 100%;
-      justify-content: center;
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
+/* User info block inside the menu */
+.user-info {
+  padding: 14px 18px;
+  font-size: 0.95rem;
 
-    .nav-links {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-basis: 100%;
-      margin-top: 0.5rem;
+  p {
+    margin: 6px 0;
+    line-height: 1.4;
+    word-break: break-word;
+  }
 
-      a {
-        margin: 6px 0;
-        font-size: 0.95rem;
-      }
-    }
+  strong {
+    font-size: 1.1rem;
+  }
+}
 
-    .user-button {
-      position: absolute;
-      top: 10px;
-      right: 12px;
-    }
+/* Each menu item: Change Password, Logout */
+::ng-deep .mat-menu-item {
+  padding: 12px 18px;
+
+  mat-icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+
+  span {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .mat-menu-panel {
+    min-width: 90vw; // Full width dropdown on phones
   }
 }

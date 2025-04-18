@@ -1,3 +1,6 @@
+<div class="page-wrapper">
+
+
 <div class="expenses-container">
   <h2>Add / Remove Expenses</h2>
 
@@ -63,6 +66,7 @@
   </form>
 
   <!-- Table -->
+  <div class="table-wrapper">
   <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef>Date</th>
@@ -109,4 +113,6 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+  </div>
+</div>
 </div>

@@ -1,13 +1,9 @@
-// :host ::ng-deep .dashboard-container {
-//     max-width: 1500px;
-//     margin: 2rem auto;
-//     padding: 2rem;
-//     background-color: #fff;
-//     border-radius: 20px;
-//     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-//     transition: all 0.3s ease;
-//   }
 :host {
-    display: block;
-  }
-  
+  display: block;
+}
+
+.main-content {
+  padding-top: 64px; // matches mat-toolbar or navbar height
+  min-height: 100vh;
+  background-color: #f9f9f9; // optional: apply your global bg
+}
