@@ -4,6 +4,7 @@ import { ChartConfiguration, ChartOptions, Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Expense } from '../expenses/expenses.component';
 import { Bill } from '../../models/bill.model';
+import firebase from 'firebase/compat/app';
 
 Chart.register(ChartDataLabels);
 

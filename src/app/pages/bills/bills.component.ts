@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddBillDialogComponent } from '../add-bill-dialog/add-bill-dialog.component';
 import { Bill } from '../../models/bill.model';
-import { DataSyncService } from 'src/app/services/data-sync.service'; // adjust path if neede
+import { DataSyncService } from 'src/app/services/data-sync.service'; // adjust path if needed
+import { FirestoreBillService } from 'src/app/services/firestore-bill.service';
+
 
 @Component({
   selector: 'app-bills',
@@ -28,39 +30,31 @@ export class BillsComponent implements OnInit {
     'July', 'August', 'September', 'October', 'November', 'December'];
   years: number[] = [];
 
-  constructor(private dialog: MatDialog,   private dataSyncService: DataSyncService // ✅ inject here
+  constructor(private dialog: MatDialog,   private dataSyncService: DataSyncService, private firestoreBillService: FirestoreBillService // ✅ inject here
   ) { }
 
   ngOnInit(): void {
-    for (let y = 2000; y <= 2040; y++) this.years.push(y);
-
-    const stored = localStorage.getItem('bills');
-    this.allBills = stored ? JSON.parse(stored) : [];
-
-    // Normalize
-    this.allBills = this.allBills.map((bill: any) => ({
-      ...bill,
-      paidCount: bill.paidCount ?? 0,
-      installments: bill.installments ?? (
-        bill.monthlyPayment && bill.amount
-          ? Math.ceil(bill.amount / bill.monthlyPayment)
-          : 1
-      ),
-      monthlyPayment: bill.monthlyPayment ?? 0,
-      paymentHistory: Array.isArray(bill.paymentHistory) ? bill.paymentHistory : [],
-      loanDirection: bill.type === 'loan' ? (bill.loanDirection ?? 'give') : undefined
-    }));
-
-    this.saveToStorage();
-
-    this.updatePersonalLoanAmount();
-    this.calculateTotals();
-    this.refreshCalendar();
-
-    // ✅ FIX: Update balance history on init too!
-    this.updateCardBalanceHistory();  // ← Add this line
+    this.firestoreBillService.getBills().subscribe((bills: Bill[]) => {
+      this.allBills = bills.map(bill => ({
+        ...bill,
+        paidCount: bill.paidCount ?? 0,
+        installments: bill.installments ?? (
+          bill.monthlyPayment && bill.amount
+            ? Math.ceil(bill.amount / bill.monthlyPayment)
+            : 1
+        ),
+        monthlyPayment: bill.monthlyPayment ?? 0,
+        paymentHistory: Array.isArray(bill.paymentHistory) ? bill.paymentHistory : [],
+        loanDirection: bill.type === 'loan' ? (bill.loanDirection ?? 'give') : undefined
+      }));
+  
+      this.updatePersonalLoanAmount();
+      this.calculateTotals();
+      this.refreshCalendar();
+      this.updateCardBalanceHistory();
+    });
   }
-
+  
 
 
   refreshCalendar(): void {

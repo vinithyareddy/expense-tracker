@@ -42,11 +42,21 @@ export class ExpensesComponent {
 
   // 🔁 Load all expenses
   loadExpenses() {
-    this.firestore.collection<Expense>('expenses', ref => ref.orderBy('date', 'desc')).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      this.expenseList = [];
+      this.dataSource.data = [];
+      return;
+    }
+  
+    this.firestore.collection<Expense>('expenses', ref =>
+      ref.where('userId', '==', user.uid).orderBy('date', 'desc')
+    ).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
       this.expenseList = data;
       this.dataSource.data = this.expenseList;
     });
   }
+  
 
   // 🔍 Search/filter table
   applyFilter(event: Event) {
@@ -90,17 +100,25 @@ export class ExpensesComponent {
   // ✅ Add or Update expense
   async submitExpense() {
     const { date, amount, category, description, method, location } = this.newExpense;
-
+  
     if (date && amount && category && description && method && location) {
+      // ✅ Get the currently logged-in user
+      const user = firebase.auth().currentUser;
+      if (!user) {
+        alert('You must be logged in to add expenses.');
+        return;
+      }
+  
       const payload = {
         date: new Date(date + 'T12:00:00'),
         amount,
         category,
         description,
         method,
-        location
+        location,
+        userId: user.uid // ✅ Associate expense with the logged-in user
       };
-
+  
       if (this.editMode && this.editingExpenseId) {
         this.firestore.collection('expenses').doc(this.editingExpenseId).update(payload);
       } else {
@@ -113,6 +131,7 @@ export class ExpensesComponent {
       alert('Please fill in all fields.');
     }
   }
+  
 
   // ❌ Cancel edit or form
   cancelEdit() {

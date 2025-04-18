@@ -7,37 +7,38 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private afAuth: AngularFireAuth) {}
+  user$: Observable<firebase.User | null>;
 
-  // 🔐 Login with email & password
+  constructor(private afAuth: AngularFireAuth) {
+    this.user$ = this.afAuth.authState;
+  }
+
   login(email: string, password: string): Promise<firebase.auth.UserCredential> {
     return this.afAuth.signInWithEmailAndPassword(email, password);
   }
 
-  // 📝 Register and update displayName & phone (stored in photoURL for simplicity)
   register(name: string, phone: string, email: string, password: string): Promise<void> {
     return this.afAuth.createUserWithEmailAndPassword(email, password).then(userCredential => {
       return userCredential.user?.updateProfile({
         displayName: name,
         photoURL: phone
-      }) as Promise<void>; // 👈 explicitly cast to match return type
+      }) as Promise<void>;
     });
   }
 
-  // 🔓 Logout
   logout(): Promise<void> {
     return this.afAuth.signOut();
   }
 
-  // 👤 Observe current user
   getCurrentUser(): Observable<firebase.User | null> {
     return this.afAuth.authState;
   }
+
   sendPasswordResetEmail(email: string) {
     return this.afAuth.sendPasswordResetEmail(email);
   }
-  setPersistence(persistence: 'local' | 'session' | 'none') {
+
+  setPersistence(persistence: 'local' | 'session' | 'none'): Promise<void> {
     return this.afAuth.setPersistence(persistence);
   }
-  
 }

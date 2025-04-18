@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
+import { getAuth } from 'firebase/auth';
 
 export interface Expense extends firebase.firestore.DocumentData {
   id?: string;
@@ -10,6 +11,7 @@ export interface Expense extends firebase.firestore.DocumentData {
   description: string;
   method: string;
   location: string;
+  uid?: string; // 🔑 Optional if not already in schema
 }
 
 interface MonthlySummary {
@@ -31,7 +33,17 @@ export class MonthlyComponent implements OnInit {
   constructor(private firestore: AngularFirestore) {}
 
   ngOnInit(): void {
-    this.firestore.collection<Expense>('expenses').valueChanges().subscribe((data: Expense[]) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.warn('User not authenticated!');
+      return;
+    }
+
+    this.firestore.collection<Expense>('expenses', ref =>
+      ref.where('uid', '==', user.uid)
+    ).valueChanges().subscribe((data: Expense[]) => {
       const grouped: { [monthYear: string]: { received: number; spent: number } } = {};
 
       data.forEach(expense => {
