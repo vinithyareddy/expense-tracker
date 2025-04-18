@@ -3,6 +3,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
 import { getAuth } from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { FirestoreBillService } from 'src/app/services/firestore-bill.service';
+
 
 
 export interface Expense extends firebase.firestore.DocumentData {
@@ -32,7 +34,7 @@ export class MonthlyComponent implements OnInit {
   monthlySummaries: MonthlySummary[] = [];
   filterText: string = '';
 
-  constructor(private firestore: AngularFirestore, private afAuth: AngularFireAuth) {}
+  constructor(private firestore: AngularFirestore, private afAuth: AngularFireAuth, private firestoreBillService: FirestoreBillService) {}
 
   ngOnInit(): void {
     this.afAuth.authState.subscribe(user => {
@@ -71,6 +73,10 @@ export class MonthlyComponent implements OnInit {
           saved: received - spent
         }));
       });
+    });
+    this.firestoreBillService.billChanged$.subscribe(() => {
+      // ⏬ Call your logic again to refresh data
+      this.ngOnInit();
     });
   }
 

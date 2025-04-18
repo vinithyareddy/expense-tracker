@@ -121,6 +121,8 @@ export class BillsComponent implements OnInit {
           this.updatePersonalLoanAmount();
           this.updateTotalCreditCardAmount();
           this.updateCardBalanceHistory();
+          this.firestoreBillService.notifyBillChanged();
+
         });
 
       }
@@ -219,6 +221,8 @@ export class BillsComponent implements OnInit {
         this.refreshCalendar();
         this.updateCardBalanceHistory();
         this.updateTotalCreditCardAmount();
+        this.firestoreBillService.notifyBillChanged();
+
       },
       error: (err) => {
         console.error('❌ FIRESTORE UPDATE FAILED:', err);
@@ -259,6 +263,8 @@ export class BillsComponent implements OnInit {
     if (index > -1) {
       this.firestoreBillService.deleteBill(bill.id).subscribe(() => {
         this.allBills = this.allBills.filter(b => b.id !== bill.id);
+        this.firestoreBillService.notifyBillChanged();
+
       });
       
 

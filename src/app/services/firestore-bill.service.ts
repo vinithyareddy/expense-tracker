@@ -3,15 +3,23 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AuthService } from './auth.service';
 import { Bill } from '../models/bill.model';
 import { map, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import firebase from 'firebase/compat/app';
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreBillService {
   constructor(private afs: AngularFirestore, private auth: AuthService) {}
+
+  // 🔁 Step 1: Add this at the top inside the class
+  private billChangedSource = new BehaviorSubject<boolean>(false);
+  billChanged$ = this.billChangedSource.asObservable();
+
+  // 🔁 Step 2: Create a method to trigger this change
+  notifyBillChanged() {
+    this.billChangedSource.next(true);
+  }
 
   private get userId$() {
     return this.auth.user$.pipe(map(user => user?.uid));
@@ -42,7 +50,7 @@ export class FirestoreBillService {
           console.warn('Missing UID or bill ID!', bill);
           return of(null);
         }
-  
+
         const updatedBill = {
           ...bill,
           paymentHistory: (bill.paymentHistory || []).map((d: any) =>
@@ -51,12 +59,12 @@ export class FirestoreBillService {
               : d
           )
         };
-  
+
         return this.afs.doc<Bill>(`users/${uid}/bills/${bill.id}`).update(updatedBill);
       })
     );
   }
-  
+
   deleteBill(billId: string) {
     return this.userId$.pipe(
       switchMap(uid => {
