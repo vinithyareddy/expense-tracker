@@ -770,4 +770,37 @@ mat-expansion-panel-header {
     position: relative;
     pointer-events: auto; // ✅ ensures it's clickable
   }
+  @media screen and (max-width: 768px) {
+    .widget-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+      overflow-x: hidden; // ✅ Prevent horizontal scroll
+      margin-top: 40px; // ✅ This will push the widgets slightly downward
+    }
+  
+    .widget {
+      width: 100% !important; // ✅ Full width on small screens
+      box-sizing: border-box;
+      margin-right: 0;
+      padding: 20px;
+    }
+  
+    .bills-container {
+      padding: 0 16px; // reduce side padding for smaller screen
+    }
+  }
+  @media screen and (max-width: 768px) {
+    .widget-content {
+      padding-bottom: 16px; // ✅ gives more breathing room inside the card
+    }
+  
+    .value {
+      margin-bottom: 10px; // ✅ reduce vertical crunch
+    }
+  
+    .caption {
+      margin-top: 20px; // ✅ push it further down inside card
+    }
+  }
   

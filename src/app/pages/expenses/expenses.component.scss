@@ -78,7 +78,7 @@ margin-bottom: 22px;
   }
   }
 
-  .table-wrapper {
+  .table-container {
     overflow-x: auto;
     width: 100%;
   }
@@ -333,5 +333,19 @@ margin-bottom: 22px;
     .mat-icon-button {
       padding: 6px;
     }
+  }
+}
+@media (max-width: 768px) {
+  .table-container {
+    margin-top: 10px;
+  }
+
+  table {
+    font-size: 0.85rem;
+    min-width: 700px;
+  }
+
+  th, td {
+    padding: 10px;
   }
 }
