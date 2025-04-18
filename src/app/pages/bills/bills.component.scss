@@ -266,6 +266,7 @@
   justify-content: flex-start;
   align-items: stretch;
   margin-bottom: 30px;
+  
 }
 .card-widget {
   display: flex;
@@ -652,5 +653,100 @@ mat-expansion-panel-header {
     opacity: 0;
     transform: translateX(20px);
     transition: all 0.3s ease-in-out;
+  }
+  @media screen and (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 20px;
+      gap: 10px;
+  
+      .add-bill-btn {
+        width: 100%;
+      }
+    }
+  
+    .bills-container {
+      padding: 0 20px;
+    }
+  
+    .widget-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+    }
+  
+    .widget {
+      width: 100%;
+    }
+  
+    .bill-section {
+      padding: 0 20px;
+    }
+  
+    .card-widget {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      padding: 16px;
+    }
+  
+    .card-right {
+      width: 100%;
+      text-align: left;
+      margin-top: 10px;
+    }
+  
+    .card-meta {
+      margin-top: 10px;
+    }
+  
+    .calendar-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    mat-card {
+      padding: 20px;
+      margin: 20px;
+    }
+  
+    .calendar {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  
+    .filter-select-wrapper {
+      flex-direction: column;
+      padding: 0 20px;
+  
+      .select-icon-wrapper {
+        width: 100%;
+      }
+    }
+  
+    .section-heading {
+      margin: 20px 20px 10px;
+      font-size: 1.1rem;
+    }
+  
+    .custom-tooltip {
+      width: 90%;
+      left: 5% !important;
+      top: auto !important;
+      bottom: 10px;
+      transform: none !important;
+    }
+  
+    .mark-paid,
+    .delete-icon {
+      width: 100%;
+      margin-top: 8px;
+    }
+  
+    .action-buttons {
+      flex-direction: column;
+      align-items: stretch;
+    }
   }
   

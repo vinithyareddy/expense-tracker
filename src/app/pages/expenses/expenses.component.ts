@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
+import { AngularFireAuth } from '@angular/fire/compat/auth'; // ← Make sure this is imported
+
 
 export interface Expense extends firebase.firestore.DocumentData {
   id?: string;
@@ -36,24 +38,23 @@ export class ExpensesComponent {
   editingExpenseId: string | null = null;
   showForm = false;
 
-  constructor(private firestore: AngularFirestore) {
-    this.loadExpenses();
-  }
+  constructor(private firestore: AngularFirestore, private auth: AngularFireAuth) {   this.loadExpenses(); }
 
   // 🔁 Load all expenses
   loadExpenses() {
-    const user = firebase.auth().currentUser;
-    if (!user) {
-      this.expenseList = [];
-      this.dataSource.data = [];
-      return;
-    }
-  
-    this.firestore.collection<Expense>('expenses', ref =>
-      ref.where('userId', '==', user.uid).orderBy('date', 'desc')
-    ).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
-      this.expenseList = data;
-      this.dataSource.data = this.expenseList;
+    this.auth.authState.subscribe(user => {
+      if (!user) {
+        this.expenseList = [];
+        this.dataSource.data = [];
+        return;
+      }
+    
+      this.firestore.collection<Expense>('expenses', ref =>
+        ref.where('userId', '==', user.uid).orderBy('date', 'desc')
+      ).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
+        this.expenseList = data;
+        this.dataSource.data = this.expenseList;
+      });
     });
   }
   
@@ -102,7 +103,6 @@ export class ExpensesComponent {
     const { date, amount, category, description, method, location } = this.newExpense;
   
     if (date && amount && category && description && method && location) {
-      // ✅ Get the currently logged-in user
       const user = firebase.auth().currentUser;
       if (!user) {
         alert('You must be logged in to add expenses.');
@@ -116,21 +116,25 @@ export class ExpensesComponent {
         description,
         method,
         location,
-        userId: user.uid // ✅ Associate expense with the logged-in user
+        userId: user.uid
       };
   
       if (this.editMode && this.editingExpenseId) {
-        this.firestore.collection('expenses').doc(this.editingExpenseId).update(payload);
+        await this.firestore.collection('expenses').doc(this.editingExpenseId).update(payload);
       } else {
-        this.firestore.collection('expenses').add(payload);
+        await this.firestore.collection('expenses').add(payload);
       }
   
       this.resetForm();
       this.showForm = false;
+  
+      // ✅ Load latest expenses again
+      this.loadExpenses();
     } else {
       alert('Please fill in all fields.');
     }
   }
+  
   
 
   // ❌ Cancel edit or form

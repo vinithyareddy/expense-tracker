@@ -37,6 +37,8 @@ export class BillsComponent implements OnInit {
     this.firestoreBillService.getBills().subscribe((bills: Bill[]) => {
       this.allBills = bills.map(bill => ({
         ...bill,
+        id: bill.id, // ✅ THIS IS REQUIRED
+  
         paidCount: bill.paidCount ?? 0,
         installments: bill.installments ?? (
           bill.monthlyPayment && bill.amount
@@ -44,7 +46,16 @@ export class BillsComponent implements OnInit {
             : 1
         ),
         monthlyPayment: bill.monthlyPayment ?? 0,
-        paymentHistory: Array.isArray(bill.paymentHistory) ? bill.paymentHistory : [],
+  
+        paymentHistory: Array.isArray(bill.paymentHistory)
+          ? bill.paymentHistory.map(ts =>
+              typeof ts === 'object' && ts !== null && 'toDate' in ts
+                ? (ts as any).toDate()
+                : new Date(ts)
+            )
+          : [],
+  
+        dueDate: (bill.dueDate as any)?.toDate?.() ?? (bill.dueDate ? new Date(bill.dueDate) : null),
         loanDirection: bill.type === 'loan' ? (bill.loanDirection ?? 'give') : undefined
       }));
   
@@ -54,6 +65,7 @@ export class BillsComponent implements OnInit {
       this.updateCardBalanceHistory();
     });
   }
+  
   
 
 
@@ -103,12 +115,13 @@ export class BillsComponent implements OnInit {
           ? Math.ceil(result.amount / result.monthlyPayment)
           : 1;
         result.paidCount = 0;
-        this.allBills.push(result);
-        this.saveToStorage();
-        this.updatePersonalLoanAmount();
-        this.calculateTotals();
-        this.refreshCalendar();
-        this.updateTotalCreditCardAmount();
+        this.firestoreBillService.addBill(result).subscribe(() => {
+          this.refreshCalendar();
+          this.calculateTotals();
+          this.updatePersonalLoanAmount();
+          this.updateTotalCreditCardAmount();
+          this.updateCardBalanceHistory();
+        });
 
       }
       window.dispatchEvent(new StorageEvent('storage', {
@@ -123,9 +136,6 @@ export class BillsComponent implements OnInit {
     });
   }
 
-  saveToStorage(): void {
-    localStorage.setItem('bills', JSON.stringify(this.allBills));
-  }
 
   get creditBills() {
     return this.allBills.filter(bill => {
@@ -184,23 +194,44 @@ export class BillsComponent implements OnInit {
 
   markInstallmentPaid(bill: any): void {
     bill.paidCount = (bill.paidCount || 0) + 1;
-
+  
     if (!bill.paymentHistory) {
       bill.paymentHistory = [];
     }
-    bill.paymentHistory.push(Date.now());
-
-    this.saveToStorage();
-    this.updateCardBalanceHistory();
-    this.calculateTotals();
-    this.refreshCalendar();
-    this.updateTotalCreditCardAmount();
-
+    bill.paymentHistory.push(new Date());
+  
+    const cleanedBill = { ...bill };
+  
+    // 🔥 Remove undefined fields (especially loanDirection)
+    Object.keys(cleanedBill).forEach((key) => {
+      if (cleanedBill[key] === undefined) {
+        delete cleanedBill[key];
+      }
+    });
+  
+    console.log('✅ Updating bill with ID:', bill.id);
+    console.log(cleanedBill);
+  
+    this.firestoreBillService.updateBill(cleanedBill).subscribe({
+      next: () => {
+        console.log('✅ BILL UPDATED');
+        this.calculateTotals();
+        this.refreshCalendar();
+        this.updateCardBalanceHistory();
+        this.updateTotalCreditCardAmount();
+      },
+      error: (err) => {
+        console.error('❌ FIRESTORE UPDATE FAILED:', err);
+      }
+    });
   }
+  
+  
+  
 
   updateCardBalanceHistory(): void {
-    const stored = localStorage.getItem('bills');
-    const bills: Bill[] = stored ? JSON.parse(stored) : [];
+    const bills: Bill[] = this.allBills;
+
     const creditBills = bills.filter(b => b.type === 'credit');
 
     let totalRemaining = 0;
@@ -226,8 +257,12 @@ export class BillsComponent implements OnInit {
   deleteBill(bill: any): void {
     const index = this.allBills.indexOf(bill);
     if (index > -1) {
-      this.allBills.splice(index, 1);
-      this.saveToStorage();
+      this.firestoreBillService.deleteBill(bill.id).subscribe(() => {
+        this.allBills = this.allBills.filter(b => b.id !== bill.id);
+      });
+      
+
+      
       this.updatePersonalLoanAmount();
       this.calculateTotals();
       this.refreshCalendar();

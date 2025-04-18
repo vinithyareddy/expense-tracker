@@ -209,3 +209,56 @@ margin-bottom: 22px;
     }
   }
 }
+@media screen and (max-width: 768px) {
+  .expenses-container {
+    padding: 20px;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .top-controls {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-box {
+      margin-right: 0;
+      margin-bottom: 10px;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .expense-form {
+    flex-direction: column;
+    mat-form-field {
+      width: 100% !important;
+    }
+
+    .form-buttons {
+      flex-direction: column;
+      align-items: stretch;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  table {
+    font-size: 0.9rem;
+
+    th, td {
+      padding: 10px;
+      word-break: break-word;
+    }
+
+    .mat-icon-button {
+      padding: 6px;
+    }
+  }
+}

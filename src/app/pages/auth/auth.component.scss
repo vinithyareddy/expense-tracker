@@ -66,4 +66,33 @@
       }
     }
   }
+  @media screen and (max-width: 600px) {
+    .auth-container {
+      padding: 20px;
+      align-items: flex-start;
+      height: auto;
+  
+      mat-card {
+        min-width: 100%;
+        max-width: 100%;
+        padding: 1.5rem;
+  
+        h2 {
+          font-size: 1.5rem;
+        }
+  
+        .full-width-button {
+          font-size: 1rem;
+        }
+  
+        .mode-toggle {
+          font-size: 0.9rem;
+        }
+  
+        .forgot-password {
+          text-align: left;
+        }
+      }
+    }
+  }
   

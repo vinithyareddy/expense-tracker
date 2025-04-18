@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
 import { getAuth } from 'firebase/auth';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+
 
 export interface Expense extends firebase.firestore.DocumentData {
   id?: string;
@@ -30,46 +32,45 @@ export class MonthlyComponent implements OnInit {
   monthlySummaries: MonthlySummary[] = [];
   filterText: string = '';
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private firestore: AngularFirestore, private afAuth: AngularFireAuth) {}
 
   ngOnInit(): void {
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (!user) {
-      console.warn('User not authenticated!');
-      return;
-    }
-
-    this.firestore.collection<Expense>('expenses', ref =>
-      ref.where('uid', '==', user.uid)
-    ).valueChanges().subscribe((data: Expense[]) => {
-      const grouped: { [monthYear: string]: { received: number; spent: number } } = {};
-
-      data.forEach(expense => {
-        const date = (expense.date as any)?.toDate?.() ?? new Date(expense.date);
-        if (isNaN(date.getTime())) return;
-
-        const key = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
-        const isIncome = expense.category.toLowerCase() === 'income';
-
-        if (!grouped[key]) {
-          grouped[key] = { received: 0, spent: 0 };
-        }
-
-        if (isIncome) {
-          grouped[key].received += expense.amount;
-        } else {
-          grouped[key].spent += expense.amount;
-        }
+    this.afAuth.authState.subscribe(user => {
+      if (!user) {
+        console.warn('User not authenticated!');
+        return;
+      }
+  
+      this.firestore.collection<Expense>('expenses', ref =>
+        ref.where('userId', '==', user.uid)
+      ).valueChanges().subscribe((data: Expense[]) => {
+        const grouped: { [monthYear: string]: { received: number; spent: number } } = {};
+  
+        data.forEach(expense => {
+          const date = (expense.date as any)?.toDate?.() ?? new Date(expense.date);
+          if (isNaN(date.getTime())) return;
+  
+          const key = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
+          const isIncome = expense.category.toLowerCase() === 'income';
+  
+          if (!grouped[key]) {
+            grouped[key] = { received: 0, spent: 0 };
+          }
+  
+          if (isIncome) {
+            grouped[key].received += expense.amount;
+          } else {
+            grouped[key].spent += expense.amount;
+          }
+        });
+  
+        this.monthlySummaries = Object.entries(grouped).map(([monthYear, { received, spent }]) => ({
+          monthYear,
+          received,
+          spent,
+          saved: received - spent
+        }));
       });
-
-      this.monthlySummaries = Object.entries(grouped).map(([monthYear, { received, spent }]) => ({
-        monthYear,
-        received,
-        spent,
-        saved: received - spent
-      }));
     });
   }
 

@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { Bill } from '../models/bill.model';
 import { map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import firebase from 'firebase/compat/app';
+
 
 @Injectable({
   providedIn: 'root',
@@ -36,12 +38,25 @@ export class FirestoreBillService {
   updateBill(bill: Bill) {
     return this.userId$.pipe(
       switchMap(uid => {
-        if (!uid || !bill.id) return of(null);
-        return this.afs.doc<Bill>(`users/${uid}/bills/${bill.id}`).update(bill);
+        if (!uid || !bill.id) {
+          console.warn('Missing UID or bill ID!', bill);
+          return of(null);
+        }
+  
+        const updatedBill = {
+          ...bill,
+          paymentHistory: (bill.paymentHistory || []).map((d: any) =>
+            d instanceof Date
+              ? firebase.firestore.Timestamp.fromDate(d)
+              : d
+          )
+        };
+  
+        return this.afs.doc<Bill>(`users/${uid}/bills/${bill.id}`).update(updatedBill);
       })
     );
   }
-
+  
   deleteBill(billId: string) {
     return this.userId$.pipe(
       switchMap(uid => {
