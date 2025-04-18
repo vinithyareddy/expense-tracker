@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { ChartConfiguration, ChartOptions, Chart } from 'chart.js';
+import { Chart, ChartConfiguration, ChartOptions } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Expense } from '../expenses/expenses.component';
 import { Bill } from '../../models/bill.model';
