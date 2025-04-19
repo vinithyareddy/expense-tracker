@@ -12,11 +12,11 @@
 <!-- Mobile Dropdown -->
 <div class="mobile-menu-dropdown" *ngIf="isMobile && mobileMenuOpen">
   <ng-container *ngIf="isLoggedIn(); else guestMobile">
-    <a routerLink="/overview" (click)="closeMobileMenu()">Overview</a>
     <a routerLink="/home" (click)="closeMobileMenu()">Home</a>
     <a routerLink="/monthly" (click)="closeMobileMenu()">Monthly</a>
     <a routerLink="/add-remove" (click)="closeMobileMenu()">Add/Remove</a>
     <a routerLink="/bills" (click)="closeMobileMenu()">Bills</a>
+    <a routerLink="/overview" (click)="closeMobileMenu()">Overview</a>
   </ng-container>
 
   <ng-template #guestMobile>
@@ -30,11 +30,11 @@
 <!-- Desktop Nav Links -->
 <div class="nav-links" *ngIf="!isMobile">
   <ng-container *ngIf="isLoggedIn(); else guestLinks">
-    <a mat-button routerLink="/overview" routerLinkActive="active-link">Overview</a>
     <a mat-button routerLink="/home" routerLinkActive="active-link">Home</a>
     <a mat-button routerLink="/monthly" routerLinkActive="active-link">Monthly</a>
     <a mat-button routerLink="/add-remove" routerLinkActive="active-link">Add/Remove</a>
     <a mat-button routerLink="/bills" routerLinkActive="active-link">Bills</a>
+    <a mat-button routerLink="/overview" routerLinkActive="active-link">Overview</a>
   </ng-container>
 
   <ng-template #guestLinks>

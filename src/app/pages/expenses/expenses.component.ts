@@ -12,7 +12,6 @@ export interface Expense extends firebase.firestore.DocumentData {
   category: string;
   description: string;
   method: string;
-  location: string;
 }
 
 @Component({
@@ -21,7 +20,7 @@ export interface Expense extends firebase.firestore.DocumentData {
   styleUrls: ['./expenses.component.scss']
 })
 export class ExpensesComponent {
-  displayedColumns: string[] = ['date', 'amount', 'category', 'description', 'method', 'location', 'actions'];
+  displayedColumns: string[] = ['date', 'amount', 'category', 'description', 'method', 'actions'];
   expenseList: Expense[] = [];
   dataSource = new MatTableDataSource<Expense>([]);
 
@@ -30,8 +29,7 @@ export class ExpensesComponent {
     amount: 0,
     category: '',
     description: '',
-    method: '',
-    location: ''
+    method: ''
   };
 
   editMode = false;
@@ -81,7 +79,6 @@ export class ExpensesComponent {
       category: '',
       description: '',
       method: '',
-      location: ''
     };
     this.editMode = false;
     this.editingExpenseId = null;
@@ -100,9 +97,9 @@ export class ExpensesComponent {
 
   // ✅ Add or Update expense
   async submitExpense() {
-    const { date, amount, category, description, method, location } = this.newExpense;
+    const { date, amount, category, description, method } = this.newExpense;
   
-    if (date && amount && category && description && method && location) {
+    if (date && amount && category && description && method) {
       const user = firebase.auth().currentUser;
       if (!user) {
         alert('You must be logged in to add expenses.');
@@ -115,7 +112,6 @@ export class ExpensesComponent {
         category,
         description,
         method,
-        location,
         userId: user.uid
       };
   

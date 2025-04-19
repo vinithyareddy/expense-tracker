@@ -30,7 +30,7 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
     this.authService.getCurrentUser().subscribe(user => {
       if (user) {
-        this.router.navigate(['/overview']);
+        this.router.navigate(['/home']);
       }
     });
   }
