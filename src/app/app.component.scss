@@ -3,7 +3,11 @@
 }
 
 .main-content {
-  padding-top: 64px; // matches mat-toolbar or navbar height
+  padding-top: 0; // default — no navbar
   min-height: 100vh;
-  background-color: #f9f9f9; // optional: apply your global bg
+  background-color: #f9f9f9;
+
+  &.with-navbar {
+    padding-top: 64px; // add space only if navbar is present
+  }
 }

@@ -8,11 +8,14 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'expense-tracker';
+  constructor(private router: Router) {}
 
+  shouldShowNavbar(): boolean {
+    return !['/about', '/auth'].includes(this.router.url);
+  }
 
-constructor(private router: Router) {}
-
-shouldShowNavbar(): boolean {
-  return !['/about', '/auth'].includes(this.router.url);
+  getNavbarClass(): string {
+    return this.shouldShowNavbar() ? 'with-navbar' : '';
+  }
 }
-}
+

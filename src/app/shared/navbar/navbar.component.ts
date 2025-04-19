@@ -15,6 +15,8 @@ import { Component, OnInit, HostListener } from '@angular/core';
     user: firebase.User | null = null;
     isMobile: boolean = false;
     mobileMenuOpen: boolean = false;
+    user$ = this.authService.user$;
+
 
     constructor(
       private authService: AuthService,
@@ -49,5 +51,16 @@ import { Component, OnInit, HostListener } from '@angular/core';
     closeMobileMenu() {
       this.mobileMenuOpen = false;
     }
-    
+
+// ✅ RIGHT:
+isLoggedIn(): boolean {
+  return this.user !== null;
+}
+
+
+
+shouldShowNavbar(): boolean {
+  const path = this.router.url;
+  return path !== '/auth' && path !== '/about';
+}
   }

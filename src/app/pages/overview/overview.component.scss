@@ -223,3 +223,59 @@
   animation: bounceIn 1.4s ease-out forwards; // <== 'forwards' keeps the end state
   opacity: 0; // Initial state for animation
 }
+@media (max-width: 768px) {
+  .overview-container {
+    padding: 2rem 1rem;
+  }
+
+  .overview-card {
+    padding: 2rem;
+
+    .app-title {
+      font-size: 1.8rem;
+    }
+
+    .app-subtitle {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section {
+      padding-left: 0;
+      h2 {
+        font-size: 1.2rem;
+      }
+      p, li {
+        font-size: 0.95rem;
+      }
+    }
+
+    .divider {
+      width: 40px;
+      height: 3px;
+    }
+
+    .developer-section {
+      .dev-profile {
+        flex-direction: column;
+
+        .dev-img {
+          width: 60px;
+          height: 60px;
+        }
+
+        .dev-info {
+          text-align: center;
+
+          h3 {
+            font-size: 1rem;
+          }
+
+          p, .dev-links a {
+            font-size: 0.85rem;
+          }
+        }
+      }
+    }
+  }
+}
