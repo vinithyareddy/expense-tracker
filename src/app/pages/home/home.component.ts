@@ -5,6 +5,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Expense } from '../expenses/expenses.component';
 import { Bill } from '../../models/bill.model';
 import firebase from 'firebase/compat/app';
+import { AuthService } from 'src/app/services/auth.service'; // ✅ Added
 
 Chart.register(ChartDataLabels);
 
@@ -75,13 +76,16 @@ export class HomeComponent implements OnInit, OnChanges, OnDestroy {
     ]
   };
 
-  constructor(private firestore: AngularFirestore) {}
+  // ✅ Inject AuthService in constructor
+  constructor(
+    private firestore: AngularFirestore,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loadData();
     this.loadBills();
 
-    // ✅ Auto-refresh Home on Bills page changes
     window.addEventListener('storage', this.handleStorageChange.bind(this));
   }
 
@@ -106,112 +110,128 @@ export class HomeComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   loadData() {
-    this.firestore.collection<Expense>('expenses').valueChanges().subscribe((data: Expense[]) => {
-      let received = 0;
-      let spent = 0;
+    this.authService.user$.subscribe(user => {
+      if (!user) return;
 
-      const monthlyMap: { [key: string]: { received: number; spent: number } } = {};
-      const categoryMap: { [category: string]: number } = {};
+      this.firestore.collection<Expense>('expenses', ref =>
+        ref.where('userId', '==', user.uid)
+      ).valueChanges()
+              .subscribe((data: Expense[]) => {
+          let received = 0;
+          let spent = 0;
 
-      data.forEach(exp => {
-        const date = exp.date?.toDate ? exp.date.toDate() : new Date(exp.date);
-        if (isNaN(date.getTime())) return;
+          const monthlyMap: { [key: string]: { received: number; spent: number } } = {};
+          const categoryMap: { [category: string]: number } = {};
 
-        const monthKey = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
-        const isIncome = exp.category.toLowerCase() === 'income';
+          data.forEach(exp => {
+            const date = exp.date?.toDate ? exp.date.toDate() : new Date(exp.date);
+            if (isNaN(date.getTime())) return;
 
-        if (!monthlyMap[monthKey]) {
-          monthlyMap[monthKey] = { received: 0, spent: 0 };
-        }
+            const monthKey = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
+            const isIncome = exp.category.toLowerCase() === 'income';
 
-        if (isIncome) {
-          received += exp.amount;
-          monthlyMap[monthKey].received += exp.amount;
-        } else {
-          spent += exp.amount;
-          monthlyMap[monthKey].spent += exp.amount;
+            if (!monthlyMap[monthKey]) {
+              monthlyMap[monthKey] = { received: 0, spent: 0 };
+            }
 
-          if (!categoryMap[exp.category]) categoryMap[exp.category] = 0;
-          categoryMap[exp.category] += exp.amount;
-        }
-      });
+            if (isIncome) {
+              received += exp.amount;
+              monthlyMap[monthKey].received += exp.amount;
+            } else {
+              spent += exp.amount;
+              monthlyMap[monthKey].spent += exp.amount;
 
-      this.totalReceived = received;
-      this.totalSpent = spent;
-      this.totalSaved = received - spent;
+              if (!categoryMap[exp.category]) categoryMap[exp.category] = 0;
+              categoryMap[exp.category] += exp.amount;
+            }
+          });
 
-      const monthLabels = Object.keys(monthlyMap);
-      const savingsData = monthLabels.map(key => monthlyMap[key].received - monthlyMap[key].spent);
-      const spentData = monthLabels.map(key => monthlyMap[key].spent);
-      const pieLabels = Object.keys(categoryMap);
-      const pieData = pieLabels.map(key => categoryMap[key]);
+          this.totalReceived = received;
+          this.totalSpent = spent;
+          this.totalSaved = received - spent;
 
-      this.lineChartData.labels = monthLabels;
-      this.lineChartData.datasets[0].data = savingsData;
+          const monthLabels = Object.keys(monthlyMap);
+          const savingsData = monthLabels.map(key => monthlyMap[key].received - monthlyMap[key].spent);
+          const spentData = monthLabels.map(key => monthlyMap[key].spent);
+          const pieLabels = Object.keys(categoryMap);
+          const pieData = pieLabels.map(key => categoryMap[key]);
 
-      this.barChartData.labels = monthLabels;
-      this.barChartData.datasets[0].data = spentData;
+          this.lineChartData.labels = monthLabels;
+          this.lineChartData.datasets[0].data = savingsData;
 
-      this.pieChartData.labels = pieLabels;
-      this.pieChartData.datasets[0].data = pieData;
+          this.barChartData.labels = monthLabels;
+          this.barChartData.datasets[0].data = spentData;
 
-      this.updateCharts();
+          this.pieChartData.labels = pieLabels;
+          this.pieChartData.datasets[0].data = pieData;
+
+          this.updateCharts();
+        });
     });
   }
 
   loadBills() {
-    const historyRaw = localStorage.getItem('cardBalanceHistory') || '{}';
-    const history: Record<string, number> = JSON.parse(historyRaw);
+    this.authService.user$.subscribe(user => {
+      if (!user) return;
 
-    const sortedMonths = Object.keys(history).sort((a, b) => {
-      const [aMonth, aYear] = a.split(' ');
-      const [bMonth, bYear] = b.split(' ');
-      return new Date(`${aMonth} 1, ${aYear}`).getTime() - new Date(`${bMonth} 1, ${bYear}`).getTime();
-    });
+      this.firestore.collection('users').doc(user.uid).collection('cardBalanceHistory')
+        .get().subscribe(snapshot => {
+          const history: Record<string, number> = {};
+          snapshot.forEach(doc => {
+            history[doc.id] = doc.data()['value'];
+          });
 
-    this.cardBalanceChartData.labels = sortedMonths;
+          const sortedMonths = Object.keys(history).sort((a, b) => {
+            const [aMonth, aYear] = a.split(' ');
+            const [bMonth, bYear] = b.split(' ');
+            return new Date(`${aMonth} 1, ${aYear}`).getTime() - new Date(`${bMonth} 1, ${bYear}`).getTime();
+          });
 
-    const chartData = sortedMonths.map(m => {
-      const val = history[m];
-      return typeof val === 'number' ? val : Number(val) || 0;
-    }) as number[];
+          this.cardBalanceChartData.labels = sortedMonths;
 
-    this.cardBalanceChartData.datasets[0].data = chartData;
+          const chartData = sortedMonths.map(m => {
+            const val = history[m];
+            return typeof val === 'number' ? val : Number(val) || 0;
+          }) as number[];
 
-    const latestMonth = sortedMonths.at(-1);
-    this.totalCardAmount = latestMonth ? (history[latestMonth] || 0) : 0;
+          this.cardBalanceChartData.datasets[0].data = chartData;
 
-    setTimeout(() => {
-      if (this.cardLineChart && !this.cardLineChart.chart) {
-        this.cardLineChart.chart = new Chart(this.cardLineChart.nativeElement, {
-          type: 'line',
-          data: this.cardBalanceChartData,
-          options: {
-            responsive: true,
-            plugins: {
-              legend: { position: 'top' },
-              datalabels: {
-                anchor: 'end',
-                align: 'top',
-                font: { size: 13, weight: 'bold' },
-                color: '#6a11cb',
-                formatter: (value: number) => {
-                  return `$${value.toLocaleString(undefined, {
-                    minimumFractionDigits: value % 1 === 0 ? 0 : 1,
-                    maximumFractionDigits: 2
-                  })}`;
-                }
-              }
-            },
-            layout: { padding: { top: 10, bottom: 10, right: 30 } }
-          },
-          plugins: [ChartDataLabels]
+          const latestMonth = sortedMonths.at(-1);
+          this.totalCardAmount = latestMonth ? (history[latestMonth] || 0) : 0;
+
+          setTimeout(() => {
+            if (this.cardLineChart && !this.cardLineChart.chart) {
+              this.cardLineChart.chart = new Chart(this.cardLineChart.nativeElement, {
+                type: 'line',
+                data: this.cardBalanceChartData,
+                options: {
+                  responsive: true,
+                  plugins: {
+                    legend: { position: 'top' },
+                    datalabels: {
+                      anchor: 'end',
+                      align: 'top',
+                      font: { size: 13, weight: 'bold' },
+                      color: '#6a11cb',
+                      formatter: (value: number) => {
+                        return `$${value.toLocaleString(undefined, {
+                          minimumFractionDigits: value % 1 === 0 ? 0 : 1,
+                          maximumFractionDigits: 2
+                        })}`;
+                      }
+                    }
+                  },
+                  layout: { padding: { top: 10, bottom: 10, right: 30 } }
+                },
+                plugins: [ChartDataLabels]
+              });
+            } else if (this.cardLineChart?.chart) {
+              this.cardLineChart.chart.data = this.cardBalanceChartData;
+              this.cardLineChart.chart.update();
+            }
+          }, 100);
         });
-      } else if (this.cardLineChart?.chart) {
-        this.cardLineChart.chart.data = this.cardBalanceChartData;
-        this.cardLineChart.chart.update();
-      }
-    }, 100);
+    });
   }
 
   updateCharts() {

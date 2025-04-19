@@ -4,7 +4,8 @@ import { AddBillDialogComponent } from '../add-bill-dialog/add-bill-dialog.compo
 import { Bill } from '../../models/bill.model';
 import { DataSyncService } from 'src/app/services/data-sync.service'; // adjust path if needed
 import { FirestoreBillService } from 'src/app/services/firestore-bill.service';
-
+import firebase from 'firebase/compat/app';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-bills',
@@ -15,7 +16,6 @@ export class BillsComponent implements OnInit {
   selectedBillType = 'credit';
   weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   calendarDays: { date: Date, dueBills: any[] }[] = [];
-
   allBills: any[] = [];
   personalLoanAmount: number = 0;
   hoveredDay: any = null;
@@ -23,22 +23,24 @@ export class BillsComponent implements OnInit {
   tooltipY = 0;
   totalDue: number = 0;
   totalPaid: number = 0;
-
   currentMonth = new Date().getMonth();
   currentYear = new Date().getFullYear();
   months = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
   years: number[] = [];
 
-  constructor(private dialog: MatDialog,   private dataSyncService: DataSyncService, private firestoreBillService: FirestoreBillService // ✅ inject here
-  ) { }
+  constructor(
+    private dialog: MatDialog,
+    private dataSyncService: DataSyncService,
+    private firestoreBillService: FirestoreBillService,
+    private firestore: AngularFirestore
+  ) {}
 
   ngOnInit(): void {
     this.firestoreBillService.getBills().subscribe((bills: Bill[]) => {
       this.allBills = bills.map(bill => ({
         ...bill,
-        id: bill.id, // ✅ THIS IS REQUIRED
-  
+        id: bill.id,
         paidCount: bill.paidCount ?? 0,
         installments: bill.installments ?? (
           bill.monthlyPayment && bill.amount
@@ -46,7 +48,6 @@ export class BillsComponent implements OnInit {
             : 1
         ),
         monthlyPayment: bill.monthlyPayment ?? 0,
-  
         paymentHistory: Array.isArray(bill.paymentHistory)
           ? bill.paymentHistory.map(ts =>
               typeof ts === 'object' && ts !== null && 'toDate' in ts
@@ -54,18 +55,16 @@ export class BillsComponent implements OnInit {
                 : new Date(ts)
             )
           : [],
-  
         dueDate: (bill.dueDate as any)?.toDate?.() ?? (bill.dueDate ? new Date(bill.dueDate) : null),
         loanDirection: bill.type === 'loan' ? (bill.loanDirection ?? 'give') : undefined
       }));
-  
+
       this.updatePersonalLoanAmount();
       this.calculateTotals();
       this.refreshCalendar();
       this.updateCardBalanceHistory();
     });
   }
-  
   
 
 
@@ -235,7 +234,6 @@ export class BillsComponent implements OnInit {
 
   updateCardBalanceHistory(): void {
     const bills: Bill[] = this.allBills;
-
     const creditBills = bills.filter(b => b.type === 'credit');
 
     let totalRemaining = 0;
@@ -247,7 +245,6 @@ export class BillsComponent implements OnInit {
 
     const now = new Date();
     const currentMonthKey = `${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}`;
-
     const history = JSON.parse(localStorage.getItem('cardBalanceHistory') || '{}');
     history[currentMonthKey] = totalRemaining;
 
@@ -256,7 +253,17 @@ export class BillsComponent implements OnInit {
       key: 'cardBalanceHistory',
       newValue: JSON.stringify(history)
     }));
+
+    const user = firebase.auth().currentUser;
+    if (user) {
+      this.firestore.collection('users')
+        .doc(user.uid)
+        .collection('cardBalanceHistory')
+        .doc(currentMonthKey)
+        .set({ value: totalRemaining });
+    }
   }
+
 
   deleteBill(bill: any): void {
     const index = this.allBills.indexOf(bill);

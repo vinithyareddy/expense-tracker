@@ -41,20 +41,20 @@ export class ExpensesComponent {
   constructor(private firestore: AngularFirestore, private auth: AngularFireAuth) {   this.loadExpenses(); }
 
   // 🔁 Load all expenses
-  loadExpenses() {
-    this.auth.authState.subscribe(user => {
-      if (!user) {
-        this.expenseList = [];
-        this.dataSource.data = [];
-        return;
-      }
-    
-      this.firestore.collection<Expense>('expenses', ref =>
-        ref.where('userId', '==', user.uid).orderBy('date', 'desc')
-      ).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
-        this.expenseList = data;
-        this.dataSource.data = this.expenseList;
-      });
+  async loadExpenses() {
+    const user = await this.auth.currentUser;
+    if (!user) {
+      this.expenseList = [];
+      this.dataSource.data = [];
+      return;
+    }
+  
+    this.firestore.collection<Expense>('expenses', ref =>
+      ref.where('userId', '==', user.uid).orderBy('date', 'desc')
+    ).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
+      console.log('📥 Fetched expenses:', data); // optional debug
+      this.expenseList = data;
+      this.dataSource.data = this.expenseList;
     });
   }
   
@@ -110,7 +110,7 @@ export class ExpensesComponent {
       }
   
       const payload = {
-        date: new Date(date + 'T12:00:00'),
+        date: firebase.firestore.Timestamp.fromDate(new Date(date + 'T12:00:00')),
         amount,
         category,
         description,
@@ -123,13 +123,15 @@ export class ExpensesComponent {
         await this.firestore.collection('expenses').doc(this.editingExpenseId).update(payload);
       } else {
         await this.firestore.collection('expenses').add(payload);
+        console.log("✅ Expense added. Reloading...");
+
       }
   
       this.resetForm();
       this.showForm = false;
   
       // ✅ Load latest expenses again
-      this.loadExpenses();
+      await this.loadExpenses();
     } else {
       alert('Please fill in all fields.');
     }

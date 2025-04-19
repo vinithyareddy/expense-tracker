@@ -43,4 +43,8 @@ export class AuthService {
   setPersistence(persistence: 'local' | 'session' | 'none'): Promise<void> {
     return this.afAuth.setPersistence(persistence);
   }
+  getCurrentUID(): Promise<string | null> {
+    return this.afAuth.currentUser.then(user => user?.uid || null);
+  }
+  
 }

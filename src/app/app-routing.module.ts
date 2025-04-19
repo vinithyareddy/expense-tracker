@@ -8,11 +8,13 @@ import { AuthComponent } from './pages/auth/auth.component';
 
 import { AuthGuard } from '../app/pages/auth/auth.guard';
 import { BillsComponent } from './pages/bills/bills.component';
+import { OverviewComponent } from './pages/overview/overview.component';
 
 
 const routes: Routes = [
   { path: '', component: AboutComponent },
   { path: 'auth', component: AuthComponent },
+  { path: 'overview', component: OverviewComponent, canActivate: [AuthGuard] },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'monthly', component: MonthlyComponent, canActivate: [AuthGuard] },
   { path: 'expenses', component: ExpensesComponent, canActivate: [AuthGuard] },

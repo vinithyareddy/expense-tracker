@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+
 import { AuthComponent } from './pages/auth/auth.component';
 import { ChangePasswordDialogComponent } from '../app/pages/ChangePasswordDialogComponent/change-password-dialog.component';
 
@@ -46,6 +47,7 @@ import { MatRadioModule } from '@angular/material/radio';
 
 import { BillsComponent } from './pages/bills/bills.component';
 import { AddBillDialogComponent } from './pages/add-bill-dialog/add-bill-dialog.component';
+import { OverviewComponent } from './pages/overview/overview.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +60,8 @@ import { AddBillDialogComponent } from './pages/add-bill-dialog/add-bill-dialog.
     NavbarComponent,
     AuthComponent,
     BillsComponent,
-    AddBillDialogComponent
+    AddBillDialogComponent,
+    OverviewComponent
   ],
   imports: [
     BrowserModule,
