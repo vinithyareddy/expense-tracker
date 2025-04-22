@@ -21,17 +21,20 @@
 
       <ng-container matColumnDef="received">
         <th mat-header-cell *matHeaderCellDef> Received </th>
-        <td mat-cell *matCellDef="let summary"> {{ summary.received | currency: 'USD' }} </td>
+        <td mat-cell *matCellDef="let summary"> {{ summary.received | currency:'USD':'symbol':'1.2-2' }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="spent">
         <th mat-header-cell *matHeaderCellDef> Spent </th>
-        <td mat-cell *matCellDef="let summary"> {{ summary.spent | currency: 'USD' }} </td>
+        <td mat-cell *matCellDef="let summary"> {{ summary.spent | currency:'USD':'symbol':'1.2-2' }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="saved">
         <th mat-header-cell *matHeaderCellDef> Saved </th>
-        <td mat-cell *matCellDef="let summary"> {{ summary.saved | currency: 'USD' }} </td>
+        <td mat-cell *matCellDef="let summary"> {{ summary.saved | currency:'USD':'symbol':'1.2-2' }}
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="['month', 'received', 'spent', 'saved']"></tr>

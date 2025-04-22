@@ -31,6 +31,13 @@
       color: white;
       font-weight: 600;
       min-width: 240px;
+      display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+  gap: 1rem;
+  max-width: 280px;
+
       
     }
 
@@ -83,14 +90,18 @@
 
 .cardname {
   text-align: left;
-  font-size: 2rem;
+  white-space: nowrap; 
+  font-size: clamp(1.4rem, 2vw, 2rem);
 }
 
+
 .currency {
-  margin-top: 60px;
-  margin-right: 100px;
-  font-size: 3rem;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  margin-top: 20px;
+  margin-right: 0;
+  text-align: center;
 }
+
 .card-amount {
   background: linear-gradient(to right, #8e2de2, #c471ed);
 }

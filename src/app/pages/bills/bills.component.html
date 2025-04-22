@@ -15,7 +15,8 @@
       <div class="widget purple">
         <div class="widget-content">
           <p class="label">Total Due</p>
-          <p class="value">₹{{ totalDue }}</p>
+          <p class="value">₹{{ totalDue | number:'1.2-2' }}
+          </p>
           <p class="caption">↗ Due this month</p>
         </div>
       </div>
@@ -24,7 +25,8 @@
       <div class="widget white">
         <div class="widget-content">
           <p class="label1">Total Paid</p>
-          <p class="value">₹{{ totalPaid }}</p>
+          <p class="value">₹{{ totalPaid | number:'1.2-2' }}
+          </p>
           <p class="caption green">↗ Paid this month</p>
         </div>
       </div>
@@ -34,7 +36,7 @@
         <div class="widget-content">
           <p class="label1">Personal Loans</p>
           <p class="value" [ngClass]="{'loan-positive': personalLoanAmount >= 0, 'loan-negative': personalLoanAmount < 0}">
-            ₹{{ personalLoanAmount < 0 ? personalLoanAmount : '+' + personalLoanAmount }}
+            ₹{{ personalLoanAmount < 0 ? (personalLoanAmount | number:'1.2-2') : '+' + (personalLoanAmount | number:'1.2-2') }}
           </p>
           <p class="caption blue">👤 Outstanding amount</p>
         </div>
@@ -121,15 +123,15 @@
       </div>
       <div class="card-right">
         <div class="card-amount">
-          ₹{{ bill.amount - (bill.paidCount || 0) * bill.monthlyPayment }}
-        </div>
+          ₹{{ (bill.amount - (bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}
+                </div>
                 <div class="card-meta">
           <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
           <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
-          <p>Monthly Payment: ₹{{ bill.monthlyPayment }}</p>
+          <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
 
           <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
-          <p *ngIf="bill.installments">Paid Amount: ₹{{ (bill.paidCount || 0) * bill.monthlyPayment || 0 }}</p>
+          <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}</p>
 
         </div>
         <div class="action-buttons">
@@ -154,14 +156,14 @@
         </div>
       </div>
       <div class="card-right">
-        <div class="card-amount">₹{{ bill.amount }}</div>
+        <div class="card-amount">₹{{ bill.amount | number:'1.2-2' }}</div>
         <div class="card-meta">
           <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
           <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
-          <p>Monthly Payment: ₹{{ bill.monthlyPayment }}</p>
+          <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
 
           <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
-          <p *ngIf="bill.installments">Paid Amount: ₹{{ (bill.paidCount || 0) * bill.monthlyPayment || 0 }}</p>
+          <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}</p>
         </div>
         <div class="action-buttons">
           <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
@@ -187,14 +189,14 @@
       </div>
     </div>
     <div class="card-right">
-      <div class="card-amount">₹{{ bill.amount }}</div>
+      <div class="card-amount">₹{{ bill.amount | number:'1.2-2' }}</div>
       <div class="card-meta">
         <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
         <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
-        <p>Monthly Payment: ₹{{ bill.monthlyPayment }}</p>
+        <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
 
         <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
-        <p *ngIf="bill.installments">Paid Amount: ₹{{ (bill.paidCount || 0) * bill.monthlyPayment || 0 }}</p>
+        <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}</p>
       </div>
       <div class="action-buttons">
         <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
