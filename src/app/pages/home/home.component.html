@@ -1,4 +1,3 @@
-
 <div class="dashboard-container">
   <!-- Summary Cards -->
   <div class="summary-cards">
@@ -6,23 +5,23 @@
       <span class="cardname">Total Received:</span>
       <span class="currency">{{ totalReceived | currency:'USD':'symbol':'1.2-2' }}</span>
     </mat-card>
-    
+
     <mat-card class="card spent">
       <span class="cardname">Total Spent:</span>
       <span class="currency">{{ totalSpent | currency:'USD':'symbol':'1.2-2' }}</span>
     </mat-card>
-    
+
     <mat-card class="card saved">
       <span class="cardname">Total Saved:</span>
       <span class="currency">{{ totalSaved | currency:'USD':'symbol':'1.2-2' }}</span>
     </mat-card>
-    
+
     <mat-card class="card card-amount">
       <span class="cardname">Total Amount:</span>
       <span class="currency">{{ totalCardAmount | currency:'USD':'symbol':'1.2-2' }}</span>
     </mat-card>
-    
-    
+
+
   </div>
 
   <!-- Charts Row 1: Line + Pie -->

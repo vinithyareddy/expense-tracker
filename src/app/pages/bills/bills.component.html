@@ -1,210 +1,206 @@
 <!-- bills.component.html -->
 <div class="page-wrapper">
-<div class="page-header">
-  <h2 class="title">Bills & Budget</h2>
-  <button class="add-bill-btn" (click)="openAddBillDialog()">
-    <span class="plus-icon">＋</span> Add Bill
-  </button>
-</div>
-
-<!-- Summary Cards -->
-<div class="bills-container">
-  <div class="container">
-    <div class="widget-row">
-      <!-- Total Due -->
-      <div class="widget purple">
-        <div class="widget-content">
-          <p class="label">Total Due</p>
-          <p class="value">₹{{ totalDue | number:'1.2-2' }}
-          </p>
-          <p class="caption">↗ Due this month</p>
-        </div>
-      </div>
-
-      <!-- Total Paid -->
-      <div class="widget white">
-        <div class="widget-content">
-          <p class="label1">Total Paid</p>
-          <p class="value">₹{{ totalPaid | number:'1.2-2' }}
-          </p>
-          <p class="caption green">↗ Paid this month</p>
-        </div>
-      </div>
-
-      <!-- Personal Loans -->
-      <div class="widget white">
-        <div class="widget-content">
-          <p class="label1">Personal Loans</p>
-          <p class="value" [ngClass]="{'loan-positive': personalLoanAmount >= 0, 'loan-negative': personalLoanAmount < 0}">
-            ₹{{ personalLoanAmount < 0 ? (personalLoanAmount | number:'1.2-2') : '+' + (personalLoanAmount | number:'1.2-2') }}
-          </p>
-          <p class="caption blue">👤 Outstanding amount</p>
-        </div>
-      </div>
-    </div>
+  <div class="page-header">
+    <h2 class="title">Bills & Budget</h2>
+    <button class="add-bill-btn" (click)="openAddBillDialog()">
+      <span class="plus-icon">＋</span> Add Bill
+    </button>
   </div>
 
- 
-
-  <!-- 🕽️ Filter Dropdown -->
-  <mat-card>
-    <div class="calendar-header">
-      <button class="arrow-btn" (click)="prevMonth()">←</button>
-      <h2>{{ getMonthName(currentMonth) }} {{ currentYear }}</h2>
-      <button class="arrow-btn" (click)="nextMonth()">→</button>
-  
-      <div class="month-selector">
-        <select [(ngModel)]="currentMonth" (change)="refreshCalendar()">
-          <option *ngFor="let m of months; let i = index" [value]="i">{{ m }}</option>
-        </select>
-        <select [(ngModel)]="currentYear" (change)="refreshCalendar()">
-          <option *ngFor="let y of years" [value]="y">{{ y }}</option>
-        </select>
-      </div>
-    </div>
-  
-    <div class="calendar">
-      <div class="day" *ngFor="let day of weekDays">{{ day }}</div>
-      <div
-      class="date-cell"
-      *ngFor="let day of calendarDays"
-      [class.has-due]="day.dueBills.length > 0"
-      (mouseenter)="hoveredDay = day"
-      (mouseleave)="hoveredDay = null"
-      (mousemove)="updateTooltipPosition($event)"
-    >
-      <span *ngIf="day.date.getTime() > 0">{{ day.date.getDate() }}</span>
-    
-      <div *ngIf="day.dueBills.length" class="due-label">
-        {{ day.dueBills[0].name }}
-      </div>
-    
-      <!-- Stylish floating tooltip -->
-      <div
-      class="custom-tooltip"
-      *ngIf="hoveredDay === day && day.dueBills.length"
-      [ngStyle]="{ top: tooltipY + 'px', left: tooltipX + 'px' }"
-    >
-      <div *ngFor="let bill of day.dueBills">
-        <div class="tooltip-title">{{ bill.name }}</div>
-        <div class="tooltip-amount">₹{{ bill.amount }}</div>
-        <div class="tooltip-date">📅 {{ bill.dueDate | date: 'mediumDate' }}</div>
-      </div>
-    </div>
-    
-    </div>
-    
-      
+  <!-- Summary Cards -->
+  <div class="bills-container">
+    <div class="container">
+      <div class="widget-row">
+        <!-- Total Due -->
+        <div class="widget purple">
+          <div class="widget-content">
+            <p class="label">Total Due</p>
+            <p class="value">₹{{ totalDue | number:'1.2-2' }}
+            </p>
+            <p class="caption">↗ Due this month</p>
           </div>
-  </mat-card>
- 
-<!-- 🕽️ Filter Dropdown -->
-<div class="filter-select-wrapper">
-  <div class="select-icon-wrapper">
-    <img src="assets/filter.jpg" alt="Filter Icon" class="select-icon" />
-    <select [(ngModel)]="selectedBillType" class="filter-dropdown">
-      <option value="credit">Credit Cards</option>
-      <option value="regular">Regular Bills</option>
-      <option value="loans">Personal Loans</option>
-    </select>
-  </div>
-</div>
+        </div>
 
+        <!-- Total Paid -->
+        <div class="widget white">
+          <div class="widget-content">
+            <p class="label1">Total Paid</p>
+            <p class="value">₹{{ totalPaid | number:'1.2-2' }}
+            </p>
+            <p class="caption green">↗ Paid this month</p>
+          </div>
+        </div>
 
-  <!-- 💳 Credit Card Bills -->
-  <div *ngIf="selectedBillType === 'credit'" class="bill-section">
-    <h3 class="section-heading">💳 Credit Card Bills</h3>
-    <div *ngFor="let bill of creditBills" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }" >
-      <div class="card-left">
-        <div class="card-details">
-          <div class="card-title"> 💳 {{ bill.name }}</div>
-          <div class="card-subtext">Credit Type</div>
+        <!-- Personal Loans -->
+        <div class="widget white">
+          <div class="widget-content">
+            <p class="label1">Personal Loans</p>
+            <p class="value"
+              [ngClass]="{'loan-positive': personalLoanAmount >= 0, 'loan-negative': personalLoanAmount < 0}">
+              ₹{{ personalLoanAmount < 0 ? (personalLoanAmount | number:'1.2-2') : '+' + (personalLoanAmount |
+                number:'1.2-2') }} </p>
+                <p class="caption blue">👤 Outstanding amount</p>
+          </div>
         </div>
       </div>
-      <div class="card-right">
-        <div class="card-amount">
-          ₹{{ (bill.amount - (bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}
-                </div>
-                <div class="card-meta">
-          <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
-          <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
-          <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
+    </div>
 
-          <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
-          <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}</p>
+
+
+    <!-- 🕽️ Filter Dropdown -->
+    <mat-card>
+      <div class="calendar-header">
+        <button class="arrow-btn" (click)="prevMonth()">←</button>
+        <h2>{{ getMonthName(currentMonth) }} {{ currentYear }}</h2>
+        <button class="arrow-btn" (click)="nextMonth()">→</button>
+
+        <div class="month-selector">
+          <select [(ngModel)]="currentMonth" (change)="refreshCalendar()">
+            <option *ngFor="let m of months; let i = index" [value]="i">{{ m }}</option>
+          </select>
+          <select [(ngModel)]="currentYear" (change)="refreshCalendar()">
+            <option *ngFor="let y of years" [value]="y">{{ y }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="calendar">
+        <div class="day" *ngFor="let day of weekDays">{{ day }}</div>
+        <div class="date-cell" *ngFor="let day of calendarDays" [class.has-due]="day.dueBills.length > 0"
+          (mouseenter)="hoveredDay = day" (mouseleave)="hoveredDay = null" (mousemove)="updateTooltipPosition($event)">
+          <span *ngIf="day.date.getTime() > 0">{{ day.date.getDate() }}</span>
+
+          <div *ngIf="day.dueBills.length" class="due-label">
+            {{ day.dueBills[0].name }}
+          </div>
+
+          <!-- Stylish floating tooltip -->
+          <div class="custom-tooltip" *ngIf="hoveredDay === day && day.dueBills.length"
+            [ngStyle]="{ top: tooltipY + 'px', left: tooltipX + 'px' }">
+            <div *ngFor="let bill of day.dueBills">
+              <div class="tooltip-title">{{ bill.name }}</div>
+              <div class="tooltip-amount">₹{{ bill.amount }}</div>
+              <div class="tooltip-date">📅 {{ bill.dueDate | date: 'mediumDate' }}</div>
+            </div>
+          </div>
 
         </div>
-        <div class="action-buttons">
-          <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
-          <button class="delete-icon" (click)="deleteBill(bill)">
-            🗑️
-          </button>
+
+
+      </div>
+    </mat-card>
+
+    <!-- 🕽️ Filter Dropdown -->
+    <div class="filter-select-wrapper">
+      <div class="select-icon-wrapper">
+        <img src="assets/filter.jpg" alt="Filter Icon" class="select-icon" />
+        <select [(ngModel)]="selectedBillType" class="filter-dropdown">
+          <option value="credit">Credit Cards</option>
+          <option value="regular">Regular Bills</option>
+          <option value="loans">Personal Loans</option>
+        </select>
+      </div>
+    </div>
+
+
+    <!-- 💳 Credit Card Bills -->
+    <div *ngIf="selectedBillType === 'credit'" class="bill-section">
+      <h3 class="section-heading">💳 Credit Card Bills</h3>
+      <div *ngFor="let bill of creditBills" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }">
+        <div class="card-left">
+          <div class="card-details">
+            <div class="card-title"> 💳 {{ bill.name }}</div>
+            <div class="card-subtext">Credit Type</div>
+          </div>
         </div>
-        
-        
+        <div class="card-right">
+          <div class="card-amount">
+            ₹{{ (bill.amount - (bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}
+          </div>
+          <div class="card-meta">
+            <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
+            <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
+            <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
+
+            <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
+            <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2'
+              }}</p>
+
+          </div>
+          <div class="action-buttons">
+            <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
+            <button class="delete-icon" (click)="deleteBill(bill)">
+              🗑️
+            </button>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 🧳 Regular Bills -->
+    <div *ngIf="selectedBillType === 'regular'" class="bill-section">
+      <h3 class="section-heading">🧳 Regular Bills</h3>
+      <div *ngFor="let bill of regularBills" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }">
+        <div class="card-left">
+          <div class="card-details">
+            <div class="card-title">🏠 {{ bill.name }}</div>
+          </div>
+        </div>
+        <div class="card-right">
+          <div class="card-amount">₹{{ bill.amount | number:'1.2-2' }}</div>
+          <div class="card-meta">
+            <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
+            <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
+            <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
+
+            <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
+            <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2'
+              }}</p>
+          </div>
+          <div class="action-buttons">
+            <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
+            <button class="delete-icon" (click)="deleteBill(bill)">
+              🗑️
+            </button>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 🤝 Personal Loans -->
+    <div *ngIf="selectedBillType === 'loans'" class="bill-section">
+      <h3 class="section-heading">🤝 Personal Loans</h3>
+      <div *ngFor="let bill of loanBills; let i = index" class="card-widget"
+        [ngClass]="{ 'fade-out': bill._completed }">
+        <div class="card-left">
+          <div class="card-details">
+            <div class="card-title">🤝 {{ bill.name }}</div>
+            <div class="card-subtext">{{ bill.loanDirection === 'give' ? 'You gave a loan' : 'You took a loan' }}</div>
+          </div>
+        </div>
+        <div class="card-right">
+          <div class="card-amount">₹{{ bill.amount | number:'1.2-2' }}</div>
+          <div class="card-meta">
+            <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
+            <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
+            <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
+
+            <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
+            <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2'
+              }}</p>
+          </div>
+          <div class="action-buttons">
+            <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
+            <button class="delete-icon" (click)="deleteBill(bill)">
+              🗑️
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- 🧳 Regular Bills -->
-  <div *ngIf="selectedBillType === 'regular'" class="bill-section">
-    <h3 class="section-heading">🧳 Regular Bills</h3>
-    <div *ngFor="let bill of regularBills" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }">
-      <div class="card-left">
-        <div class="card-details">
-          <div class="card-title">🏠 {{ bill.name }}</div>
-        </div>
-      </div>
-      <div class="card-right">
-        <div class="card-amount">₹{{ bill.amount | number:'1.2-2' }}</div>
-        <div class="card-meta">
-          <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
-          <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
-          <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
-
-          <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
-          <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}</p>
-        </div>
-        <div class="action-buttons">
-          <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
-          <button class="delete-icon" (click)="deleteBill(bill)">
-            🗑️
-          </button>
-        </div>
-        
-        
-      </div>
-    </div>
-  </div>
-
-  
-<!-- 🤝 Personal Loans -->
-<div *ngIf="selectedBillType === 'loans'" class="bill-section">
-  <h3 class="section-heading">🤝 Personal Loans</h3>
-  <div *ngFor="let bill of loanBills; let i = index" class="card-widget" [ngClass]="{ 'fade-out': bill._completed }">
-    <div class="card-left">
-      <div class="card-details">
-        <div class="card-title">🤝 {{ bill.name }}</div>
-        <div class="card-subtext">{{ bill.loanDirection === 'give' ? 'You gave a loan' : 'You took a loan' }}</div>
-      </div>
-    </div>
-    <div class="card-right">
-      <div class="card-amount">₹{{ bill.amount | number:'1.2-2' }}</div>
-      <div class="card-meta">
-        <p>{{ bill.paidCount || 0 }} of {{ bill.installments }} installments</p>
-        <p *ngIf="bill.dueDate">📅 Due {{ bill.dueDate | date:'MMM d, y' }}</p>
-        <p>Monthly Payment: ₹{{ bill.monthlyPayment | number:'1.2-2' }}</p>
-
-        <p *ngIf="bill.installments">Remaining Installments: {{ bill.installments - (bill.paidCount || 0) }}</p>
-        <p *ngIf="bill.installments">Paid Amount: ₹{{ ((bill.paidCount || 0) * bill.monthlyPayment) | number:'1.2-2' }}</p>
-      </div>
-      <div class="action-buttons">
-        <button class="mark-paid" (click)="markInstallmentPaid(bill)">Mark Installment Paid</button>
-        <button class="delete-icon" (click)="deleteBill(bill)">
-          🗑️
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-</div>

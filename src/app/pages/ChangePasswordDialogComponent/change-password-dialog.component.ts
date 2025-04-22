@@ -24,7 +24,7 @@ export class ChangePasswordDialogComponent {
     private dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
     private authService: AuthService,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   async changePassword(): Promise<void> {
     if (this.newPassword !== this.confirmPassword) {

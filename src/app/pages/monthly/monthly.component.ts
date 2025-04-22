@@ -15,7 +15,7 @@ export interface Expense extends firebase.firestore.DocumentData {
   description: string;
   method: string;
   location: string;
-  uid?: string; // 🔑 Optional if not already in schema
+  uid?: string;
 }
 
 interface MonthlySummary {
@@ -34,7 +34,7 @@ export class MonthlyComponent implements OnInit {
   monthlySummaries: MonthlySummary[] = [];
   filterText: string = '';
 
-  constructor(private firestore: AngularFirestore, private afAuth: AngularFireAuth, private firestoreBillService: FirestoreBillService) {}
+  constructor(private firestore: AngularFirestore, private afAuth: AngularFireAuth, private firestoreBillService: FirestoreBillService) { }
 
   ngOnInit(): void {
     this.afAuth.authState.subscribe(user => {
@@ -42,30 +42,30 @@ export class MonthlyComponent implements OnInit {
         console.warn('User not authenticated!');
         return;
       }
-  
+
       this.firestore.collection<Expense>('expenses', ref =>
         ref.where('userId', '==', user.uid)
       ).valueChanges().subscribe((data: Expense[]) => {
         const grouped: { [monthYear: string]: { received: number; spent: number } } = {};
-  
+
         data.forEach(expense => {
           const date = (expense.date as any)?.toDate?.() ?? new Date(expense.date);
           if (isNaN(date.getTime())) return;
-  
+
           const key = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
           const isIncome = expense.category.toLowerCase() === 'income';
-  
+
           if (!grouped[key]) {
             grouped[key] = { received: 0, spent: 0 };
           }
-  
+
           if (isIncome) {
             grouped[key].received += expense.amount;
           } else {
             grouped[key].spent += expense.amount;
           }
         });
-  
+
         this.monthlySummaries = Object.entries(grouped).map(([monthYear, { received, spent }]) => ({
           monthYear,
           received,
@@ -75,7 +75,7 @@ export class MonthlyComponent implements OnInit {
       });
     });
     this.firestoreBillService.billChanged$.subscribe(() => {
-      // ⏬ Call your logic again to refresh data
+
       this.ngOnInit();
     });
   }

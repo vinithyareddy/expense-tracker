@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import firebase from 'firebase/compat/app';
-import { AngularFireAuth } from '@angular/fire/compat/auth'; // ← Make sure this is imported
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 
 export interface Expense extends firebase.firestore.DocumentData {
@@ -36,9 +36,9 @@ export class ExpensesComponent {
   editingExpenseId: string | null = null;
   showForm = false;
 
-  constructor(private firestore: AngularFirestore, private auth: AngularFireAuth) {   this.loadExpenses(); }
+  constructor(private firestore: AngularFirestore, private auth: AngularFireAuth) { this.loadExpenses(); }
 
-  // 🔁 Load all expenses
+
   async loadExpenses() {
     const user = await this.auth.currentUser;
     if (!user) {
@@ -46,7 +46,7 @@ export class ExpensesComponent {
       this.dataSource.data = [];
       return;
     }
-  
+
     this.firestore.collection<Expense>('expenses', ref =>
       ref.where('userId', '==', user.uid).orderBy('date', 'desc')
     ).valueChanges({ idField: 'id' }).subscribe((data: Expense[]) => {
@@ -55,7 +55,7 @@ export class ExpensesComponent {
       this.dataSource.data = this.expenseList;
     });
   }
-  
+
 
   // 🔍 Search/filter table
   applyFilter(event: Event) {
@@ -98,14 +98,14 @@ export class ExpensesComponent {
   // ✅ Add or Update expense
   async submitExpense() {
     const { date, amount, category, description, method } = this.newExpense;
-  
+
     if (date && amount && category && description && method) {
       const user = firebase.auth().currentUser;
       if (!user) {
         alert('You must be logged in to add expenses.');
         return;
       }
-  
+
       const payload = {
         date: firebase.firestore.Timestamp.fromDate(new Date(date + 'T12:00:00')),
         amount,
@@ -114,7 +114,7 @@ export class ExpensesComponent {
         method,
         userId: user.uid
       };
-  
+
       if (this.editMode && this.editingExpenseId) {
         await this.firestore.collection('expenses').doc(this.editingExpenseId).update(payload);
       } else {
@@ -122,25 +122,25 @@ export class ExpensesComponent {
         console.log("✅ Expense added. Reloading...");
 
       }
-  
+
       this.resetForm();
       this.showForm = false;
-  
+
       // ✅ Load latest expenses again
       await this.loadExpenses();
     } else {
       alert('Please fill in all fields.');
     }
   }
-  
-  
+
+
 
   // ❌ Cancel edit or form
   cancelEdit() {
     this.resetForm();
     this.showForm = false;
   }
-  
+
 
   // 🗑️ Delete a record
   deleteExpense(id: string) {

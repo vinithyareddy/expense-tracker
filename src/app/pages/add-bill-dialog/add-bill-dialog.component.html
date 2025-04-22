@@ -23,32 +23,19 @@
     <!-- Amount -->
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Amount</mat-label>
-      <input
-        matInput
-        type="number"
-        [(ngModel)]="bill.amount"
-        name="amount"
-        required
-        #amountInput="ngModel"
-        (focus)="bill.amount === 0 && (bill.amount = null)"
-      />
+      <input matInput type="number" [(ngModel)]="bill.amount" name="amount" required #amountInput="ngModel"
+        (focus)="bill.amount === 0 && (bill.amount = null)" />
       <mat-error *ngIf="amountInput.invalid && amountInput.touched">Amount is required</mat-error>
     </mat-form-field>
 
     <!-- Monthly Payment (all except when noMonthlyPayment selected) -->
     <mat-form-field appearance="outline" class="full-width" *ngIf="bill.type !== 'loan' || !bill.noMonthlyPayment">
       <mat-label>Monthly Payment</mat-label>
-      <input
-        matInput
-        type="number"
-        [(ngModel)]="bill.monthlyPayment"
-        name="monthlyPayment"
-        required
-        #monthlyPaymentInput="ngModel"
-        [disabled]="bill.type === 'loan' && bill.noMonthlyPayment"
-        (focus)="bill.monthlyPayment === 0 && (bill.monthlyPayment = null)"
-      />
-      <mat-error *ngIf="monthlyPaymentInput.invalid && monthlyPaymentInput.touched">Monthly payment is required</mat-error>
+      <input matInput type="number" [(ngModel)]="bill.monthlyPayment" name="monthlyPayment" required
+        #monthlyPaymentInput="ngModel" [disabled]="bill.type === 'loan' && bill.noMonthlyPayment"
+        (focus)="bill.monthlyPayment === 0 && (bill.monthlyPayment = null)" />
+      <mat-error *ngIf="monthlyPaymentInput.invalid && monthlyPaymentInput.touched">Monthly payment is
+        required</mat-error>
     </mat-form-field>
 
     <!-- No Monthly Payment checkbox (only for Personal Loan) -->
@@ -59,7 +46,8 @@
     <!-- Loan Type Options -->
     <div *ngIf="bill.type === 'loan'" class="full-width">
       <label class="sub-label">Loan Type</label>
-      <mat-radio-group [(ngModel)]="bill.loanDirection" name="loanDirection" required #loanDirectionInput="ngModel" class="loan-direction-group">
+      <mat-radio-group [(ngModel)]="bill.loanDirection" name="loanDirection" required #loanDirectionInput="ngModel"
+        class="loan-direction-group">
         <mat-radio-button value="give">I Gave a Loan</mat-radio-button>
         <mat-radio-button value="take">I Took a Loan</mat-radio-button>
       </mat-radio-group>
@@ -69,28 +57,27 @@
     <!-- Loaner Name -->
     <mat-form-field appearance="outline" class="full-width" *ngIf="bill.type === 'loan'">
       <mat-label>Loaner Name</mat-label>
-      <input matInput [(ngModel)]="bill.loaner" name="loaner" required placeholder="Who gave the loan?" #loanerInput="ngModel" />
+      <input matInput [(ngModel)]="bill.loaner" name="loaner" required placeholder="Who gave the loan?"
+        #loanerInput="ngModel" />
       <mat-error *ngIf="loanerInput.invalid && loanerInput.touched">Loaner is required</mat-error>
     </mat-form-field>
 
     <!-- Borrower Name -->
     <mat-form-field appearance="outline" class="full-width" *ngIf="bill.type === 'loan'">
       <mat-label>Borrower Name</mat-label>
-      <input matInput [(ngModel)]="bill.borrower" name="borrower" required placeholder="Who received the loan?" #borrowerInput="ngModel" />
+      <input matInput [(ngModel)]="bill.borrower" name="borrower" required placeholder="Who received the loan?"
+        #borrowerInput="ngModel" />
       <mat-error *ngIf="borrowerInput.invalid && borrowerInput.touched">Borrower is required</mat-error>
     </mat-form-field>
-
-    <!-- Due Date -->
-   <!-- Due Date (Required except for Personal Loan) -->
-<mat-form-field appearance="outline" class="full-width"
-*ngIf="bill.type !== 'loan' || !bill.autoDueDate">
-<mat-label>Due Date</mat-label>
-<input matInput [matDatepicker]="picker" [(ngModel)]="bill.dueDate" name="dueDate"
-       [required]="bill.type !== 'loan'" />
-<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-<mat-datepicker #picker></mat-datepicker>
-<mat-error *ngIf="bill.type !== 'loan' && !bill.dueDate">Due date is required</mat-error>
-</mat-form-field>
+    <!-- Due Date (Required except for Personal Loan) -->
+    <mat-form-field appearance="outline" class="full-width" *ngIf="bill.type !== 'loan' || !bill.autoDueDate">
+      <mat-label>Due Date</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="bill.dueDate" name="dueDate"
+        [required]="bill.type !== 'loan'" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="bill.type !== 'loan' && !bill.dueDate">Due date is required</mat-error>
+    </mat-form-field>
 
 
     <p *ngIf="calculatedInstallments && !bill.noMonthlyPayment" class="installment-info">
@@ -108,11 +95,10 @@
     </p>
 
     <!-- Category -->
-  <!-- Category (Optional) -->
-<mat-form-field appearance="outline" class="full-width">
-  <mat-label>Category (Optional)</mat-label>
-  <input matInput [(ngModel)]="bill.category" name="category" />
-</mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Category (Optional)</mat-label>
+      <input matInput [(ngModel)]="bill.category" name="category" />
+    </mat-form-field>
 
   </div>
 

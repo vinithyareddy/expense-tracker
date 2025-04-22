@@ -5,7 +5,7 @@ import {
   transition,
   animate
 } from '@angular/animations';
-import AOS from 'aos'; // ✅ This is default import for AOS v2+
+import AOS from 'aos';
 
 
 
@@ -41,7 +41,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         rotation: -360,
         ease: 'back.out(1.7)'
       });
-  
+
       gsap.from('.animate-slide-in', {
         opacity: 0,
         x: -100,
@@ -49,7 +49,7 @@ export class OverviewComponent implements OnInit, AfterViewInit {
         stagger: 0.3,
         ease: 'power2.out'
       });
-    }, 0); // ✅ ensures DOM is ready
+    }, 0);
   }
-  
+
 }

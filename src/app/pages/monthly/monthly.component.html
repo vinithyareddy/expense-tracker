@@ -1,19 +1,14 @@
 <div class="monthly-summary">
   <h2>Monthly Summaries</h2>
 
-  <!-- 🔍 Stylish Left-Aligned Filter Bar -->
+
   <div class="filter-bar-left">
-    <input
-      type="text"
-      placeholder="🔍 Search month, amount..."
-      [(ngModel)]="filterText"
-      class="filter-input-left"
-    />
+    <input type="text" placeholder="🔍 Search month, amount..." [(ngModel)]="filterText" class="filter-input-left" />
   </div>
 
   <mat-card>
     <table mat-table [dataSource]="filteredSummaries()" class="mat-elevation-z2 full-width">
-      <!-- Columns -->
+
       <ng-container matColumnDef="month">
         <th mat-header-cell *matHeaderCellDef> Month </th>
         <td mat-cell *matCellDef="let summary"> {{ summary.monthYear }} </td>

@@ -10,13 +10,12 @@ import firebase from 'firebase/compat/app';
   providedIn: 'root',
 })
 export class FirestoreBillService {
-  constructor(private afs: AngularFirestore, private auth: AuthService) {}
+  constructor(private afs: AngularFirestore, private auth: AuthService) { }
 
-  // 🔁 Step 1: Add this at the top inside the class
   private billChangedSource = new BehaviorSubject<boolean>(false);
   billChanged$ = this.billChangedSource.asObservable();
 
-  // 🔁 Step 2: Create a method to trigger this change
+
   notifyBillChanged() {
     this.billChangedSource.next(true);
   }

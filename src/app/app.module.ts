@@ -101,4 +101,4 @@ import { OverviewComponent } from './pages/overview/overview.component';
   providers: [CurrencyService],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

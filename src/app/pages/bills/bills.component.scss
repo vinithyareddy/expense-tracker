@@ -1,4 +1,3 @@
-/* === Page Header === */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -15,7 +14,7 @@
 .action-buttons {
   display: flex;
   align-items: center;
-  gap: 10px; // 👈 Add spacing between green button and trash
+  gap: 10px;
 }
 
 .delete-icon {
@@ -60,8 +59,6 @@
   justify-content: flex-start;
   margin: 20px 40px;
 
-
-
   .select-icon-wrapper {
     position: relative;
     display: inline-flex;
@@ -69,23 +66,22 @@
     border: 2px solid #040304;
     border-radius: 14px;
     background: white;
-    height: 60px; // ✅ Increased height
-    width: 200px; // or more
+    height: 60px;
+    width: 200px;
     padding: 12px 16px;
 
-  
     .select-icon {
       position: absolute;
       left: 16px;
-      width: 56px;    // ✅ Bigger icon
+      width: 56px;
       height: 50px;
       opacity: 0.8;
       pointer-events: none;
     }
-  
+
     select {
       width: 100%;
-      padding-left: 70px;  // 👈 enough space for bigger icon
+      padding-left: 70px;
       border: none;
       background: transparent;
       font-size: 1.2rem;
@@ -94,15 +90,13 @@
       appearance: none;
       cursor: pointer;
       height: 60px;
-      
-  
+
       option {
         font-weight: 500;
       }
     }
   }
-  }
-
+}
 
 /* === Section Heading === */
 .section-heading {
@@ -144,7 +138,6 @@
   font-weight: 600;
   font-size: 1.6rem;
   margin-bottom: 4px;
-
 }
 
 .bill-subtext {
@@ -249,7 +242,6 @@
   background: #3b9b41;
 }
 
-
 .add-bill-secondary:hover {
   color: #5c3bff;
 }
@@ -266,7 +258,6 @@
   justify-content: flex-start;
   align-items: stretch;
   margin-bottom: 30px;
-  
 }
 .card-widget {
   display: flex;
@@ -314,7 +305,7 @@
   font-size: 0.875rem;
   color: #666;
   margin-top: 10px;
-  margin-left: 40px
+  margin-left: 40px;
 }
 
 .card-right {
@@ -396,7 +387,6 @@
   color: #4caf50;
 }
 
-
 .blue {
   color: #3b82f6;
 }
@@ -475,7 +465,6 @@ select:focus {
   border-color: #7b61ff;
 }
 
-/* === Accordion Styling === */
 mat-accordion {
   margin: 0 40px 30px;
   border-radius: 12px;
@@ -496,7 +485,6 @@ mat-expansion-panel-header {
   font-size: 1rem;
 }
 
-/* === Pill-Style Filter === */
 .pill-filter {
   display: flex;
   gap: 12px;
@@ -525,11 +513,11 @@ mat-expansion-panel-header {
   }
 }
 .loan-positive {
-  color: #111; // black
+  color: #111;
 }
 
 .loan-negative {
-  color: #e53935; // red
+  color: #e53935;
 }
 
 .calendar-header {
@@ -574,7 +562,7 @@ mat-expansion-panel-header {
   transition: background 0.2s ease;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; // 👈 Keep date number top-left
+  align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
 
@@ -588,219 +576,218 @@ mat-expansion-panel-header {
     margin: 4px;
   }
 
-    .due-label {
-      font-size: 20px;
-      font-weight: 700;
-      color: #5c3bff;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
+  .due-label {
+    font-size: 20px;
+    font-weight: 700;
+    color: #5c3bff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+}
+
+.custom-tooltip {
+  position: fixed;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 12px 16px;
+  width: 240px;
+  z-index: 1000;
+  font-size: 14px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+  animation: fadeInUp 0.25s ease-in-out;
+
+  .tooltip-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #5c3bff;
+  }
+
+  .tooltip-amount {
+    font-weight: 500;
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 4px;
+  }
+
+  .tooltip-date {
+    font-size: 13px;
+    color: #888;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-out {
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease-in-out;
+}
+@media screen and (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 20px;
+    gap: 10px;
+
+    .add-bill-btn {
       width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      pointer-events: none;
     }
-    
+  }
+
+  .bills-container {
+    padding: 0 20px;
+  }
+
+  .widget-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .widget {
+    width: 100%;
+  }
+
+  .bill-section {
+    padding: 0 20px;
+  }
+
+  .card-widget {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 16px;
+  }
+
+  .card-right {
+    width: 100%;
+    text-align: left;
+    margin-top: 10px;
+  }
+
+  .card-meta {
+    margin-top: 10px;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  mat-card {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .calendar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .filter-select-wrapper {
+    flex-direction: column;
+    padding: 0 20px;
+
+    .select-icon-wrapper {
+      width: 100%;
+    }
+  }
+
+  .section-heading {
+    margin: 20px 20px 10px;
+    font-size: 1.1rem;
   }
 
   .custom-tooltip {
-    position: fixed;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 12px 16px;
-    width: 240px;
-    z-index: 1000;
-    font-size: 14px;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-    pointer-events: none;
-    animation: fadeInUp 0.25s ease-in-out;
-  
-    .tooltip-title {
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 4px;
-      color: #5c3bff;
-    }
-  
-    .tooltip-amount {
-      font-weight: 500;
-      font-size: 15px;
-      color: #333;
-      margin-bottom: 4px;
-    }
-  
-    .tooltip-date {
-      font-size: 13px;
-      color: #888;
-    }
+    width: 90%;
+    left: 5% !important;
+    top: auto !important;
+    bottom: 10px;
+    transform: none !important;
   }
-  
-  @keyframes fadeInUp {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+
+  .mark-paid,
+  .delete-icon {
+    width: 100%;
+    margin-top: 8px;
   }
-  .fade-out {
-    opacity: 0;
-    transform: translateX(20px);
-    transition: all 0.3s ease-in-out;
+
+  .action-buttons {
+    flex-direction: column;
+    align-items: stretch;
   }
-  @media screen and (max-width: 768px) {
-    .page-header {
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 0 20px;
-      gap: 10px;
-  
-      .add-bill-btn {
-        width: 100%;
-      }
-    }
-  
-    .bills-container {
-      padding: 0 20px;
-    }
-  
-    .widget-row {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
-    }
-  
-    .widget {
-      width: 100%;
-    }
-  
-    .bill-section {
-      padding: 0 20px;
-    }
-  
-    .card-widget {
-      flex-direction: column;
-      align-items: flex-start;
-      text-align: left;
-      padding: 16px;
-    }
-  
-    .card-right {
-      width: 100%;
-      text-align: left;
-      margin-top: 10px;
-    }
-  
-    .card-meta {
-      margin-top: 10px;
-    }
-  
-    .calendar-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-  
-    mat-card {
-      padding: 20px;
-      margin: 20px;
-    }
-  
-    .calendar {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  
-    .filter-select-wrapper {
-      flex-direction: column;
-      padding: 0 20px;
-  
-      .select-icon-wrapper {
-        width: 100%;
-      }
-    }
-  
-    .section-heading {
-      margin: 20px 20px 10px;
-      font-size: 1.1rem;
-    }
-  
-    .custom-tooltip {
-      width: 90%;
-      left: 5% !important;
-      top: auto !important;
-      bottom: 10px;
-      transform: none !important;
-    }
-  
-    .mark-paid,
-    .delete-icon {
-      width: 100%;
-      margin-top: 8px;
-    }
-  
-    .action-buttons {
-      flex-direction: column;
-      align-items: stretch;
-    }
+}
+
+.page-header {
+  position: relative;
+  z-index: 2;
+}
+.add-bill-btn {
+  z-index: 1001;
+  position: relative;
+}
+mat-card,
+.calendar-header {
+  position: relative;
+  z-index: 0;
+}
+.page-wrapper {
+  padding-top: 30px;
+}
+.add-bill-btn {
+  z-index: 1001;
+  position: relative;
+  pointer-events: auto;
+}
+@media screen and (max-width: 768px) {
+  .widget-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    overflow-x: hidden;
+    margin-top: 40px;
   }
-  
-  .page-header {
-    position: relative;
-    z-index: 2;
+
+  .widget {
+    width: 100% !important;
+    box-sizing: border-box;
+    margin-right: 0;
+    padding: 20px;
   }
-  .add-bill-btn {
-    z-index: 1001;
-    position: relative;
+
+  .bills-container {
+    padding: 0 16px;
   }
-  mat-card, .calendar-header {
-    position: relative;
-    z-index: 0;
+}
+@media screen and (max-width: 768px) {
+  .widget-content {
+    padding-bottom: 16px;
   }
-  .page-wrapper {
-    padding-top: 30px; // height of fixed navbar
+
+  .value {
+    margin-bottom: 10px;
   }
-  .add-bill-btn {
-    z-index: 1001;
-    position: relative;
-    pointer-events: auto; // ✅ ensures it's clickable
+
+  .caption {
+    margin-top: 20px;
   }
-  @media screen and (max-width: 768px) {
-    .widget-row {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
-      overflow-x: hidden; // ✅ Prevent horizontal scroll
-      margin-top: 40px; // ✅ This will push the widgets slightly downward
-    }
-  
-    .widget {
-      width: 100% !important; // ✅ Full width on small screens
-      box-sizing: border-box;
-      margin-right: 0;
-      padding: 20px;
-    }
-  
-    .bills-container {
-      padding: 0 16px; // reduce side padding for smaller screen
-    }
-  }
-  @media screen and (max-width: 768px) {
-    .widget-content {
-      padding-bottom: 16px; // ✅ gives more breathing room inside the card
-    }
-  
-    .value {
-      margin-bottom: 10px; // ✅ reduce vertical crunch
-    }
-  
-    .caption {
-      margin-top: 20px; // ✅ push it further down inside card
-    }
-  }
-  
+}

@@ -7,11 +7,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  // ✅ Add this line at the top inside the class
   user$: Observable<firebase.User | null>;
 
   constructor(private afAuth: AngularFireAuth) {
-    // ✅ Assign authState to user$
     this.user$ = this.afAuth.authState;
   }
 
@@ -46,5 +44,5 @@ export class AuthService {
   getCurrentUID(): Promise<string | null> {
     return this.afAuth.currentUser.then(user => user?.uid || null);
   }
-  
+
 }

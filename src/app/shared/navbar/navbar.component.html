@@ -9,47 +9,47 @@
     </button>
   </div>
 
-<!-- Mobile Dropdown -->
-<div class="mobile-menu-dropdown" *ngIf="isMobile && mobileMenuOpen">
-  <ng-container *ngIf="isLoggedIn(); else guestMobile">
-    <a routerLink="/home" (click)="closeMobileMenu()">Home</a>
-    <a routerLink="/monthly" (click)="closeMobileMenu()">Monthly</a>
-    <a routerLink="/add-remove" (click)="closeMobileMenu()">Add/Remove</a>
-    <a routerLink="/bills" (click)="closeMobileMenu()">Bills</a>
-    <a routerLink="/overview" (click)="closeMobileMenu()">Overview</a>
+  <!-- Mobile Dropdown -->
+  <div class="mobile-menu-dropdown" *ngIf="isMobile && mobileMenuOpen">
+    <ng-container *ngIf="isLoggedIn(); else guestMobile">
+      <a routerLink="/home" (click)="closeMobileMenu()">Home</a>
+      <a routerLink="/monthly" (click)="closeMobileMenu()">Monthly</a>
+      <a routerLink="/add-remove" (click)="closeMobileMenu()">Add/Remove</a>
+      <a routerLink="/bills" (click)="closeMobileMenu()">Bills</a>
+      <a routerLink="/overview" (click)="closeMobileMenu()">Overview</a>
+    </ng-container>
+
+    <ng-template #guestMobile>
+      <a routerLink="/about" (click)="closeMobileMenu()">About</a>
+    </ng-template>
+  </div>
+
+
+  <span class="spacer"></span>
+
+  <!-- Desktop Nav Links -->
+  <div class="nav-links" *ngIf="!isMobile">
+    <ng-container *ngIf="isLoggedIn(); else guestLinks">
+      <a mat-button routerLink="/home" routerLinkActive="active-link">Home</a>
+      <a mat-button routerLink="/monthly" routerLinkActive="active-link">Monthly</a>
+      <a mat-button routerLink="/add-remove" routerLinkActive="active-link">Add/Remove</a>
+      <a mat-button routerLink="/bills" routerLinkActive="active-link">Bills</a>
+      <a mat-button routerLink="/overview" routerLinkActive="active-link">Overview</a>
+    </ng-container>
+
+    <ng-template #guestLinks>
+      <a mat-button routerLink="/about" routerLinkActive="active-link">About</a>
+    </ng-template>
+  </div>
+
+
+
+
+  <ng-container *ngIf="!isMobile && isLoggedIn()">
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-button">
+      <mat-icon>account_circle</mat-icon>
+    </button>
   </ng-container>
-
-  <ng-template #guestMobile>
-    <a routerLink="/about" (click)="closeMobileMenu()">About</a>
-  </ng-template>
-</div>
-
-
-<span class="spacer"></span>
-
-<!-- Desktop Nav Links -->
-<div class="nav-links" *ngIf="!isMobile">
-  <ng-container *ngIf="isLoggedIn(); else guestLinks">
-    <a mat-button routerLink="/home" routerLinkActive="active-link">Home</a>
-    <a mat-button routerLink="/monthly" routerLinkActive="active-link">Monthly</a>
-    <a mat-button routerLink="/add-remove" routerLinkActive="active-link">Add/Remove</a>
-    <a mat-button routerLink="/bills" routerLinkActive="active-link">Bills</a>
-    <a mat-button routerLink="/overview" routerLinkActive="active-link">Overview</a>
-  </ng-container>
-
-  <ng-template #guestLinks>
-    <a mat-button routerLink="/about" routerLinkActive="active-link">About</a>
-  </ng-template>
-</div>
-
-
-
-
-<ng-container *ngIf="!isMobile && isLoggedIn()">
-  <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-button">
-    <mat-icon>account_circle</mat-icon>
-  </button>
-</ng-container>
 
 
   <mat-menu #userMenu="matMenu">

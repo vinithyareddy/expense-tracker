@@ -5,7 +5,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Expense } from '../expenses/expenses.component';
 import { Bill } from '../../models/bill.model';
 import firebase from 'firebase/compat/app';
-import { AuthService } from 'src/app/services/auth.service'; // ✅ Added
+import { AuthService } from 'src/app/services/auth.service';
 
 Chart.register(ChartDataLabels);
 
@@ -76,11 +76,10 @@ export class HomeComponent implements OnInit, OnChanges, OnDestroy {
     ]
   };
 
-  // ✅ Inject AuthService in constructor
   constructor(
     private firestore: AngularFirestore,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadData();
@@ -116,7 +115,7 @@ export class HomeComponent implements OnInit, OnChanges, OnDestroy {
       this.firestore.collection<Expense>('expenses', ref =>
         ref.where('userId', '==', user.uid)
       ).valueChanges()
-              .subscribe((data: Expense[]) => {
+        .subscribe((data: Expense[]) => {
           let received = 0;
           let spent = 0;
 

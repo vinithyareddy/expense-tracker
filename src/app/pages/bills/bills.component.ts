@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddBillDialogComponent } from '../add-bill-dialog/add-bill-dialog.component';
 import { Bill } from '../../models/bill.model';
-import { DataSyncService } from 'src/app/services/data-sync.service'; // adjust path if needed
+import { DataSyncService } from 'src/app/services/data-sync.service';
 import { FirestoreBillService } from 'src/app/services/firestore-bill.service';
 import firebase from 'firebase/compat/app';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
@@ -34,7 +34,7 @@ export class BillsComponent implements OnInit {
     private dataSyncService: DataSyncService,
     private firestoreBillService: FirestoreBillService,
     private firestore: AngularFirestore
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.firestoreBillService.getBills().subscribe((bills: Bill[]) => {
@@ -50,10 +50,10 @@ export class BillsComponent implements OnInit {
         monthlyPayment: bill.monthlyPayment ?? 0,
         paymentHistory: Array.isArray(bill.paymentHistory)
           ? bill.paymentHistory.map(ts =>
-              typeof ts === 'object' && ts !== null && 'toDate' in ts
-                ? (ts as any).toDate()
-                : new Date(ts)
-            )
+            typeof ts === 'object' && ts !== null && 'toDate' in ts
+              ? (ts as any).toDate()
+              : new Date(ts)
+          )
           : [],
         dueDate: (bill.dueDate as any)?.toDate?.() ?? (bill.dueDate ? new Date(bill.dueDate) : null),
         loanDirection: bill.type === 'loan' ? (bill.loanDirection ?? 'give') : undefined
@@ -65,7 +65,7 @@ export class BillsComponent implements OnInit {
       this.updateCardBalanceHistory();
     });
   }
-  
+
 
 
   refreshCalendar(): void {
@@ -133,7 +133,7 @@ export class BillsComponent implements OnInit {
         key: 'totalCreditCardAmount',
         newValue: localStorage.getItem('totalCreditCardAmount') || ''
       }));
-      
+
     });
   }
 
@@ -195,24 +195,23 @@ export class BillsComponent implements OnInit {
 
   markInstallmentPaid(bill: any): void {
     bill.paidCount = (bill.paidCount || 0) + 1;
-  
+
     if (!bill.paymentHistory) {
       bill.paymentHistory = [];
     }
     bill.paymentHistory.push(new Date());
-  
+
     const cleanedBill = { ...bill };
-  
-    // 🔥 Remove undefined fields (especially loanDirection)
+
     Object.keys(cleanedBill).forEach((key) => {
       if (cleanedBill[key] === undefined) {
         delete cleanedBill[key];
       }
     });
-  
+
     console.log('✅ Updating bill with ID:', bill.id);
     console.log(cleanedBill);
-  
+
     this.firestoreBillService.updateBill(cleanedBill).subscribe({
       next: () => {
         console.log('✅ BILL UPDATED');
@@ -228,9 +227,9 @@ export class BillsComponent implements OnInit {
       }
     });
   }
-  
-  
-  
+
+
+
 
   updateCardBalanceHistory(): void {
     const bills: Bill[] = this.allBills;
@@ -273,20 +272,19 @@ export class BillsComponent implements OnInit {
         this.firestoreBillService.notifyBillChanged();
 
       });
-      
 
-      
+
+
       this.updatePersonalLoanAmount();
       this.calculateTotals();
       this.refreshCalendar();
       this.updateTotalCreditCardAmount();
-      this.updateCardBalanceHistory(); // ✅ make sure balance history updates
+      this.updateCardBalanceHistory();
 
-      // ✅ Clear total credit if no credit bills left
       const creditBills = this.allBills.filter(b => b.type === 'credit');
       if (creditBills.length === 0) {
         localStorage.setItem('totalCreditCardAmount', '0');
-        
+
 
         const now = new Date();
         const currentMonthKey = `${now.toLocaleString('default', { month: 'short' })} ${now.getFullYear()}`;
@@ -332,10 +330,10 @@ export class BillsComponent implements OnInit {
       const installments = bill.installments || 1;
       const isFullyPaid = paidCount >= installments;
 
-      // 🚫 Skip loan 'give'
+
       if (bill.type === 'loan' && bill.loanDirection === 'give') continue;
 
-      // ✅ Count paid this month
+
       let paidThisMonth = 0;
       if (Array.isArray(bill.paymentHistory)) {
         for (let ts of bill.paymentHistory) {
@@ -347,7 +345,7 @@ export class BillsComponent implements OnInit {
         }
       }
 
-      // ✅ TOTAL DUE
+
       if (!isFullyPaid && dueDate) {
         const monthsSinceStart =
           (selectedYear - dueDate.getFullYear()) * 12 +
@@ -355,7 +353,6 @@ export class BillsComponent implements OnInit {
 
         const monthsDue = Math.min(installments - paidCount, monthsSinceStart + 1);
         if (monthsDue > 0) {
-          // Subtract the count of this month's payments from the due
           const effectiveDueCount = Math.max(monthsDue - paidThisMonth, 0);
           if (monthsDue > 0 && effectiveDueCount > 0) {
             due += (monthly > 0 ? monthly : bill.amount) * effectiveDueCount;

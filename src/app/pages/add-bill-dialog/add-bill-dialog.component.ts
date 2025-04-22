@@ -22,7 +22,7 @@ export class AddBillDialogComponent {
     borrower: ''
   };
 
-  constructor(private dialogRef: MatDialogRef<AddBillDialogComponent>) {}
+  constructor(private dialogRef: MatDialogRef<AddBillDialogComponent>) { }
 
   close(): void {
     this.dialogRef.close();
@@ -32,16 +32,16 @@ export class AddBillDialogComponent {
     if (this.bill.autoDueDate && this.calculatedDueDate) {
       this.bill.dueDate = this.calculatedDueDate;
     }
-  
+
     const result = {
       ...this.bill,
-      noMonthlyPayment: this.bill.noMonthlyPayment, // ✅ ensure it's carried forward
-      repeatMonthly: this.bill.repeatMonthly,       // optional
+      noMonthlyPayment: this.bill.noMonthlyPayment,
+      repeatMonthly: this.bill.repeatMonthly,
     };
-  
+
     this.dialogRef.close(result);
   }
-  
+
   get calculatedInstallments(): number | null {
     if (
       this.bill.amount !== null &&

@@ -11,7 +11,6 @@ export class CurrencyService {
     return amount * this.conversionRate;
   }
 
-  // If you want to change the conversion rate dynamically, you can add a method here
   updateConversionRate(newRate: number): void {
     this.conversionRate = newRate;
   }

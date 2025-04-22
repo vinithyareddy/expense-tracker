@@ -7,13 +7,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./about.component.scss']
 })
 export class AboutComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
   ngOnInit() {
     if (localStorage.getItem('user')) {
       this.router.navigate(['/overview']);
     }
   }
-  
+
   goHome() {
     this.router.navigate(['/auth']);
   }
